@@ -112,6 +112,22 @@ class ResumeApp(App[None]):
         self.search_matches: list[Static] = []
         self.search_match_index = 0
 
+        self._profile_widget: ProfileWidget
+        self._panel_widgets: list[SectionPanel]
+        self._content_widget: VerticalScroll
+
+    @property
+    def profile(self) -> ProfileWidget:
+        return self._profile_widget
+
+    @property
+    def panels(self) -> list[SectionPanel]:
+        return self._panel_widgets
+
+    @property
+    def content(self) -> VerticalScroll:
+        return self._content_widget
+
     def compose(self) -> ComposeResult:
         resume = resume_fr if self.language == "fr" else resume_en
 
@@ -159,7 +175,14 @@ class ResumeApp(App[None]):
         )
 
     def on_mount(self) -> None:
-        self._profile().focus()
+        self._profile_widget = self.query_one("#sidebar", ProfileWidget)
+        self._panel_widgets = [
+            self.query_one(f"#{section_id}", SectionPanel)
+            for section_id in SECTION_IDS
+        ]
+        self._content_widget = self.query_one("#content", VerticalScroll)
+
+        self.profile.focus()
         self._sync_panel_classes()
         self._sync_footer()
 
@@ -173,24 +196,14 @@ class ResumeApp(App[None]):
         self._sync_panel_classes()
         self._sync_footer()
 
-    def _profile(self) -> ProfileWidget:
-        return self.query_one("#sidebar", ProfileWidget)
 
-    def _panels(self) -> list[SectionPanel]:
-        return [
-            self.query_one("#" + section_id, SectionPanel)
-            for section_id in SECTION_IDS
-        ]
 
     def _current_panel(self) -> SectionPanel:
-        panels = self._panels()
-        return panels[self.section_index % len(panels)]
+        return self.panels[self.section_index % len(self.panels)]
 
-    def _content(self) -> VerticalScroll:
-        return self.query_one("#content", VerticalScroll)
 
     def _reveal_section(self, panel: SectionPanel, *, pin: bool) -> None:
-        self._content().scroll_to_widget(
+        self.content.scroll_to_widget(
             panel,
             animate=False,
             top=pin,
@@ -201,7 +214,7 @@ class ResumeApp(App[None]):
 
     def _sync_panel_classes(self) -> None:
         try:
-            panels = self._panels()
+            panels = self.panels
         except NoMatches:
             return
 
@@ -250,11 +263,10 @@ class ResumeApp(App[None]):
             return
 
         if self.nav_area == "profile":
-            profile = self._profile()
             if step < 0:
-                profile.scroll_up(animate=False)
+                self.profile.scroll_up(animate=False)
             else:
-                profile.scroll_down(animate=False)
+                self.profile.scroll_down(animate=False)
             return
 
         self._move_between_sections(step)
@@ -262,7 +274,7 @@ class ResumeApp(App[None]):
     def action_profile(self) -> None:
         self.nav_area = "profile"
         self.mode = "nav"
-        self._profile().focus()
+        self.profile.focus()
         self._sync_panel_classes()
         self._sync_footer()
 
@@ -278,8 +290,7 @@ class ResumeApp(App[None]):
             self._sync_footer()
 
     def _move_between_sections(self, step: int) -> None:
-        panels = self._panels()
-        self.section_index = (self.section_index + step) % len(panels)
+        self.section_index = (self.section_index + step) % len(self.panels)
         panel = self._current_panel()
         panel.focus()
         self._reveal_section(panel, pin=False)
@@ -333,8 +344,7 @@ class ResumeApp(App[None]):
         self._sync_footer()
 
     def action_jump(self, index: int) -> None:
-        panels = self._panels()
-        self.section_index = index % len(panels)
+        self.section_index = index % len(self.panels)
         self.nav_area = "sections"
         self.mode = "nav"
         panel = self._current_panel()
@@ -354,7 +364,7 @@ class ResumeApp(App[None]):
         self._sync_panel_classes()
 
         if self.nav_area == "profile":
-            self._profile().focus()
+            self.profile.focus()
             self._sync_footer()
             return
 
@@ -457,7 +467,7 @@ class ResumeApp(App[None]):
             self._sync_search_footer()
             return
 
-        for section_index, panel in enumerate(self._panels()):
+        for section_index, panel in enumerate(self.panels):
             entries = self._entries(panel)
 
             for entry_index, entry in enumerate(entries):
@@ -471,7 +481,7 @@ class ResumeApp(App[None]):
 
                 owner.focus()
 
-                self._content().scroll_to_widget(
+                self.content.scroll_to_widget(
                     target,
                     animate=False,
                     top=True,
@@ -529,7 +539,7 @@ class ResumeApp(App[None]):
 
     def _restore_current_focus(self) -> None:
         if self.nav_area == "profile":
-            self._profile().focus()
+            self.profile.focus()
             return
 
         panel = self._current_panel()

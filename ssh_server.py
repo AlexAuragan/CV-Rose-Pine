@@ -1,16 +1,15 @@
 import asyncio
+import fcntl
 import os
 import pty
-import time
-from signal import SIGWINCH
+import struct
 import sys
+import termios
+import time
 from pathlib import Path
+from signal import SIGWINCH
 
 import asyncssh
-
-import fcntl
-import struct
-import termios
 
 BASE_DIR = Path(__file__).resolve().parent
 MAIN_PATH = BASE_DIR / "main.py"
@@ -126,7 +125,6 @@ async def handle_client(
             f"Started main.py as PID {child.pid}",
             flush=True,
         )
-        first_output = True
         async def forward_input() -> None:
             while True:
                 try:
