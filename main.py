@@ -14,9 +14,10 @@ from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
 from textual.reactive import reactive
+from unicodedata import combining, normalize
 
 # from textual.widget import Widget
-from textual.widgets import Static
+from textual.widgets import Input, Static
 
 from resume.content.en import resume_en
 from resume.content.fr import resume_fr
@@ -40,6 +41,7 @@ HINTS = {
         "[bold #c4a7e7]←→ hl[/] [#908caa]pane[/]",
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]section[/]",
         "[bold #c4a7e7]↵[/] [#908caa]browse[/]",
+        "[bold #c4a7e7]/ f[/] [#908caa]grep[/]",
         "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
         "[bold #c4a7e7]0-4[/] [#908caa]jump[/]",
         "[bold #c4a7e7]q[/] [#908caa]quit[/]",
@@ -47,6 +49,7 @@ HINTS = {
     "inside": [
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]select[/]",
         "[bold #c4a7e7]← h[/] [#908caa]profile[/]",
+        "[bold #c4a7e7]/ f[/] [#908caa]grep[/]",
         "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
         "[bold #c4a7e7]tab[/] [#908caa]links[/]",
         "[bold #c4a7e7]esc[/] [#908caa]sections[/]",
@@ -54,6 +57,13 @@ HINTS = {
     ],
 }
 
+def normalize_search(text: str) -> str:
+    decomposed = normalize("NFKD", text.casefold())
+    return "".join(
+        character
+        for character in decomposed
+        if not combining(character)
+    )
 
 class ResumeApp(App[None]):
     HORIZONTAL_BREAKPOINTS = [
@@ -88,6 +98,12 @@ class ResumeApp(App[None]):
         self.section_index = 0
         self.entry_indexes = [0 for _ in SECTION_IDS]
         self.nav_area = "profile"
+
+        # Search
+        self.search_mode = False
+        self.search_query = ""
+        self.search_matches: list[Static] = []
+        self.search_match_index = 0
 
     def compose(self) -> ComposeResult:
         resume = resume_fr if self.language == "fr" else resume_en
@@ -130,6 +146,10 @@ class ResumeApp(App[None]):
                 )
 
         yield NavigationBar(HINTS[self.mode], id="footer")
+        yield Input(
+            placeholder="grep...",
+            id="search-input",
+        )
 
     def on_mount(self) -> None:
         self._profile().focus()
@@ -216,6 +236,8 @@ class ResumeApp(App[None]):
         )
 
     def action_move_vertical(self, step: int) -> None:
+        if self.search_mode:
+            return
         if self.mode == "inside":
             self._move_between_entries(step)
             return
@@ -289,6 +311,12 @@ class ResumeApp(App[None]):
         self._sync_footer()
 
     def action_leave_section(self) -> None:
+        if self.search_mode:
+            self._close_search_input()
+            self._restore_current_focus()
+            self._sync_footer()
+            return
+
         if self.mode != "inside":
             return
 
@@ -309,6 +337,9 @@ class ResumeApp(App[None]):
         self._sync_footer()
 
     def action_toggle_language(self) -> None:
+        self.search_query = ""
+        self.search_matches.clear()
+        self.search_match_index = 0
         self.language = "en" if self.language == "fr" else "fr"
         self.call_after_refresh(self._restore_focus_after_language_change)
 
@@ -341,6 +372,190 @@ class ResumeApp(App[None]):
             self._reveal_section(panel, pin=False)
 
         self._sync_footer()
+
+    def _searchable_text(self, widget: Static) -> str:
+        if isinstance(widget, TagRow):
+            return widget.search_text()
+
+        return str(widget.content)
+
+
+    def _find_search_matches(self, query: str) -> list[Static]:
+        needle = normalize_search(query)
+        matches: list[Static] = []
+
+        body = self.query_one("#body")
+
+        for widget in body.query(Static):
+            text = normalize_search(self._searchable_text(widget))
+
+            if needle in text:
+                matches.append(widget)
+
+        return matches
+
+    def _search_owner(self, target: Widget) -> Widget | None:
+        node = target
+
+        while node is not None:
+            if isinstance(node, ProfileWidget):
+                return node
+
+            if isinstance(
+                node,
+                (
+                    PostWidget,
+                    ProjectWidget,
+                    StudyWidget,
+                    MiscWidget,
+                ),
+            ):
+                return node
+
+            node = node.parent
+
+        return None
+
+    def _sync_search_footer(self) -> None:
+        footer = self.query_one("#footer-location", Static)
+
+        footer.update(
+            f"[bold #f6c177]/ {self.search_query}[/] "
+            f"[#908caa]:: "
+            f"{self.search_match_index + 1}/{len(self.search_matches)} "
+            f":: n/N next/prev[/]"
+        )
+
+    def _focus_search_match(self) -> None:
+        if not self.search_matches:
+            return
+
+        target = self.search_matches[self.search_match_index]
+        owner = self._search_owner(target)
+
+        if owner is None:
+            return
+
+        if isinstance(owner, ProfileWidget):
+            self.nav_area = "profile"
+            self.mode = "nav"
+
+            owner.focus()
+            owner.scroll_to_widget(
+                target,
+                animate=False,
+            )
+
+            self._sync_panel_classes()
+            self._sync_search_footer()
+            return
+
+        for section_index, panel in enumerate(self._panels()):
+            entries = self._entries(panel)
+
+            for entry_index, entry in enumerate(entries):
+                if entry is not owner:
+                    continue
+
+                self.section_index = section_index
+                self.entry_indexes[section_index] = entry_index
+                self.nav_area = "sections"
+                self.mode = "inside"
+
+                owner.focus()
+
+                self._content().scroll_to_widget(
+                    target,
+                    animate=False,
+                    top=True,
+                )
+
+                self._sync_panel_classes()
+                self._sync_search_footer()
+                return
+
+    def action_open_search(self) -> None:
+        if self.search_mode:
+            return
+
+        self.search_mode = True
+
+        search_input = self.query_one("#search-input", Input)
+        search_input.value = ""
+
+        self.screen.add_class("-search")
+        self.call_after_refresh(search_input.focus)
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        if event.input.id != "search-input":
+            return
+
+        query = event.value.strip()
+
+        self._close_search_input()
+
+        if not query:
+            self._restore_current_focus()
+            self._sync_footer()
+            return
+
+        self.search_query = query
+        self.search_matches = self._find_search_matches(query)
+        self.search_match_index = 0
+
+        if not self.search_matches:
+            self._restore_current_focus()
+            self._sync_footer()
+
+            footer = self.query_one("#footer-location", Static)
+            footer.update(
+                f"[bold #eb6f92]/ {query}[/] "
+                "[#908caa]:: no matches[/]"
+            )
+            return
+
+        self._focus_search_match()
+
+    def _close_search_input(self) -> None:
+        self.search_mode = False
+        self.screen.remove_class("-search")
+
+    def _restore_current_focus(self) -> None:
+        if self.nav_area == "profile":
+            self._profile().focus()
+            return
+
+        panel = self._current_panel()
+
+        if self.mode == "nav":
+            panel.focus()
+            return
+
+        entries = self._entries(panel)
+
+        if not entries:
+            panel.focus()
+            return
+
+        index = min(
+            self.entry_indexes[self.section_index],
+            len(entries) - 1,
+        )
+
+        entries[index].focus()
+
+    def action_next_search(self, step: int) -> None:
+        if self.search_mode:
+            return
+
+        if not self.search_matches:
+            return
+
+        self.search_match_index = (
+            self.search_match_index + step
+        ) % len(self.search_matches)
+
+        self._focus_search_match()
 
 if __name__ == "__main__":
     ResumeApp().run()

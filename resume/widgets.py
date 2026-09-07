@@ -127,6 +127,18 @@ class TagRow(Static):
         self.language: Language = language
         self.add_class("tag-row")
 
+    def search_text(self) -> str:
+        parts = [self.label]
+
+        for value in self.values:
+            if isinstance(value, HyperLink):
+                parts.append(value.title(self.language))
+                parts.append(value.url)
+            else:
+                parts.append(value)
+
+        return " ".join(parts)
+
     def render(self) -> Text:
             line = Text()
 

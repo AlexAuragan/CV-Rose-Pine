@@ -15,16 +15,6 @@ $highlight-low: #2a283e;
 $highlight-med: #44415a;
 $highlight-high: #56526e;
 
-$background: $base;
-$foreground: $text;
-$panel: $surface;
-$accent: $iris;
-$secondary: $foam;
-$success: $pine;
-$warning: $gold;
-$error: $love;
-$boost: $overlay;
-
 Screen {
     background: $base;
     color: $text;
@@ -428,4 +418,41 @@ Screen.-tiny #sidebar {
 
 Screen.-tiny #footer-location {
     display: none;
+}
+
+/* --------- Search input --------- */
+#search-input {
+    display: none;
+
+    width: 100%;
+    height: 3;
+
+    padding: 0 2;
+
+    background: $surface;
+    color: $text;
+
+    border: none;
+    border-top: solid $gold;
+}
+
+#search-input:focus {
+    background: $surface;
+    color: $text;
+
+    border: none;
+    border-top: solid $gold;
+}
+
+#search-input > .input--cursor {
+    background: $gold;
+    color: $base;
+}
+
+Screen.-search #footer {
+    display: none;
+}
+
+Screen.-search #search-input {
+    display: block;
 }
