@@ -1,5 +1,7 @@
 import os
 
+from textual.widget import Widget
+
 os.environ["COLORTERM"] = "truecolor"
 
 from functools import partial
@@ -10,7 +12,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
 from textual.reactive import reactive
-from textual.widget import Widget
+# from textual.widget import Widget
 from textual.widgets import Static
 
 from resume.content.fr import resume_fr
@@ -140,7 +142,7 @@ class Resume(App[None]):
     def _reveal_section(self, panel: SectionPanel, *, pin: bool) -> None:
         self._content().scroll_to_widget(
             panel,
-            animate=True,
+            animate=False,
             top=pin,
         )
 

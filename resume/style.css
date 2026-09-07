@@ -92,9 +92,6 @@ Screen {
     border-title-color: $foam;
 }
 
-.section-panel.-dim {
-    opacity: 0.58;
-}
 
 .section-empty {
     height: 100%;
