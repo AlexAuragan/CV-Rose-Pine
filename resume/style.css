@@ -1,6 +1,6 @@
-/* Rosé Pine palette (https://rosepinetheme.com) */
+/* Rosé Pine */
 $base: #191724;
-$surface: #1f1d2e;
+$surface: #26233a;
 $overlay: #26233a;
 $muted: #6e6a86;
 $subtle: #908caa;
@@ -13,10 +13,9 @@ $foam: #9ccfd8;
 $iris: #c4a7e7;
 $highlight: #403d52;
 
-/* Map Rosé Pine onto Textual's built-in variables */
 $background: $base;
 $foreground: $text;
-$panel: $overlay;
+$panel: $surface;
 $accent: $iris;
 $secondary: $foam;
 $success: $pine;
@@ -24,224 +23,268 @@ $warning: $gold;
 $error: $love;
 $boost: $surface;
 
-/* Section accents */
 $accent-experience: $love;
 $accent-projects: $foam;
 $accent-studies: $rose;
 $accent-misc: $iris;
+
 
 Screen {
     background: $base;
     color: $text;
 }
 
-/* ---------- Layout: sidebar | 2x2 grid | footer ---------- */
-
 #body {
     width: 100%;
     height: 1fr;
     layout: horizontal;
     padding: 1;
+    background: $base;
 }
 
 #sidebar {
-    width: 48;
+    width: 40;
+    min-width: 34;
     height: 100%;
-    border: round $overlay;
-    border-title-color: $muted;
-    border-title-align: center;
-    padding: 1 2;
     margin-right: 1;
+    padding: 1 2;
+    background: $surface;
+    border: round $highlight;
+    border-title-color: $muted;
+    border-title-background: $surface;
+    border-title-align: left;
+    scrollbar-visibility: hidden;
+}
+
+#sidebar:focus {
+    border: round $iris;
+    border-title-color: $iris;
 }
 
 #content {
     width: 1fr;
     height: 100%;
     layout: grid;
-    grid-size: 2 2;
-    grid-columns: 1fr 1fr;
-    grid-rows: 1fr 1fr;
-    grid-gutter: 1;
+    grid-size: 1 4;
+    grid-columns: 1fr;
+    grid-rows: 1fr 1fr 1fr 1fr;
+    grid-gutter: 0;
+    background: $base;
 }
 
 .section-panel {
+    width: 100%;
     height: 100%;
-    border: round $overlay;
-    background: $base;
+    background: $surface;
+    border: round $highlight;
     border-title-color: $muted;
-    border-title-align: center;
-    scrollbar-background: $base;
-    scrollbar-color: $highlight;
-    scrollbar-color-active: $rose;
-    scrollbar-color-hover: $rose;
-}
-
-.section-empty {
-    color: $muted;
-    padding: 0 2;
-}
-
-/* nav mode: the focused section "lights up", like superfile's active pane */
-.section-panel:focus {
-    border: heavy $rose;
-    background: $surface;
-    border-title-color: $rose;
     border-title-background: $surface;
+    border-title-align: left;
+    scrollbar-background: $surface;
+    scrollbar-color: $highlight;
+    scrollbar-color-active: $foam;
+    scrollbar-color-hover: $foam;
 }
 
-/* inside mode: section you are browsing is emphasized, others dim */
+.section-panel:focus {
+    border: round $iris;
+    border-title-color: $iris;
+}
+
 .section-panel.-active {
-    border: double $foam;
-    background: $surface;
+    border: round $foam;
     border-title-color: $foam;
 }
 
 .section-panel.-dim {
-    opacity: 0.45;
+    opacity: 0.58;
 }
 
-/* ---------- Footer navigation bar (superfile style) ---------- */
+.section-empty {
+    height: 100%;
+    color: $muted;
+    content-align: center middle;
+}
+
+/* ---------- Footer ---------- */
 
 #footer {
+    width: 100%;
     height: 3;
     padding: 0 2;
     background: $surface;
-    border-top: heavy $overlay;
+    border-top: solid $highlight;
 }
 
 #footer-location {
     width: 1fr;
     height: 1;
+    background: $surface;
     color: $subtle;
     content-align: left middle;
 }
 
 #footer-hints {
-    height: 1;
     width: auto;
+    height: 1;
+    background: $surface;
 }
 
 .contact-item {
     width: auto;
     height: 1;
+    margin-left: 2;
+    background: $surface;
     color: $muted;
-    margin: 0 1;
 }
 
-/* ---------- Sidebar / profile ---------- */
+/* ---------- Profile ---------- */
 
-#sidebar > .profile-art {
+.profile-art {
+    background: transparent;
     color: $iris;
+    margin-bottom: 1;
 }
 
 .profile-name {
+    background: transparent;
     color: $text;
     text-style: bold;
+    border-bottom: solid $highlight;
     padding-bottom: 1;
-    border-bottom: dashed $overlay;
     margin-bottom: 1;
 }
 
 .profile-title {
+    background: transparent;
     color: $rose;
-    text-style: italic;
+    text-style: bold;
 }
 
 .profile-region {
+    background: transparent;
     color: $muted;
 }
 
 .profile-highlights {
+    background: transparent;
     margin-top: 1;
 }
 
 .profile-highlight {
+    background: transparent;
     color: $gold;
 }
 
 .profile-current-label {
+    background: transparent;
     color: $muted;
     text-style: bold;
     margin-top: 1;
 }
 
 .profile-current {
+    background: transparent;
     color: $foam;
 }
 
-/* ---------- Cards (entries in each section) ---------- */
+/* ---------- Resume entries: list rows, not boxed cards ---------- */
 
-.post,
-.project,
-.study,
-.misc {
+.entry {
     width: 100%;
     height: auto;
-    padding: 0 1;
-    margin-bottom: 1;
-    border: outer $overlay;
-    background: $base;
+    padding: 0 1 0 2;
+    margin: 0 1 1 1;
+    background: transparent;
+    border-left: solid $surface;
 }
 
-.post {
-    border-left: heavy $accent-experience;
+.entry:hover {
+    background: $highlight;
+    border-left: solid $subtle;
 }
 
-.project {
-    border-left: heavy $accent-projects;
+.entry:focus {
+    background: $highlight;
+    border-left: solid $iris;
+    color: $text;
 }
 
-.study {
-    border-left: heavy $accent-studies;
+.entry:focus .card-title {
+    color: $text;
+    text-style: bold;
 }
 
-.misc {
-    border-left: heavy $accent-misc;
+.entry:focus .card-period,
+.entry:focus .card-region,
+.entry:focus .study-speciality,
+.entry:focus .project-modality {
+    color: $rose;
 }
 
-.post:hover,
-.project:hover,
-.study:hover,
-.misc:hover {
-    background: $surface;
+.entry:focus .description-line {
+    color: $text;
 }
 
-.post:focus,
-.project:focus,
-.study:focus,
-.misc:focus {
-    background: $surface;
-    border: outer $iris;
+.entry:focus .tag {
+    background: $overlay;
+    color: $gold;
 }
 
-/* inside entries */
+.post .card-title {
+    color: $love;
+}
+
+.project .card-title {
+    color: $foam;
+}
+
+.study .card-title {
+    color: $rose;
+}
+
+.misc .card-title {
+    color: $iris;
+}
 
 .card-header {
     width: 100%;
     height: 1;
+    background: transparent;
 }
 
 .card-title {
-    color: $text;
+    width: auto;
+    background: transparent;
     text-style: bold;
 }
 
 .card-period {
     width: 1fr;
-    content-align: right middle;
+    background: transparent;
     color: $muted;
+    content-align: right middle;
 }
 
 .card-meta {
     width: 100%;
     height: auto;
+    background: transparent;
+    color: $subtle;
 }
 
 .card-region {
+    background: transparent;
     color: $muted;
 }
 
-/* ---- links ---- */
+.study-speciality,
+.project-modality {
+    background: transparent;
+    color: $subtle;
+}
+
+/* ---------- Links ---------- */
 
 Link {
     background: transparent;
@@ -250,42 +293,78 @@ Link {
 }
 
 Link:hover {
-    background: $overlay;
+    background: $highlight;
     color: $rose;
     text-style: bold;
 }
 
-/* ---- descriptions ---- */
+Link:focus {
+    background: $iris;
+    color: $base;
+    text-style: bold;
+}
+
+.links-row {
+    width: 100%;
+    height: auto;
+    background: transparent;
+    margin-top: 1;
+}
+
+.links-label {
+    width: auto;
+    background: transparent;
+    color: $subtle;
+    margin-right: 1;
+}
+
+.external-link {
+    width: auto;
+    margin-right: 2;
+}
+
+/* ---------- Descriptions ---------- */
+
+.description {
+    width: 100%;
+    height: auto;
+    background: transparent;
+}
 
 .description-line {
+    background: transparent;
     color: $text;
 }
 
 .description-group-title {
+    background: transparent;
     color: $gold;
     text-style: bold;
 }
 
 .description-children {
     width: 100%;
+    background: transparent;
     margin-left: 2;
     padding-left: 1;
-    border-left: outer $overlay;
+    border-left: solid $highlight;
 }
 
-/* ---- tags ---- */
+/* ---------- Tags ---------- */
 
 .tag-row {
     width: 100%;
     height: auto;
+    background: transparent;
     margin-top: 1;
-    margin-left: 1;
 }
 
 .tag-label {
+    width: auto;
+    background: transparent;
     color: $subtle;
     text-style: italic;
-    padding-right: 1;
+    margin-right: 1;
 }
 
 .tag {
@@ -301,7 +380,7 @@ Link:hover {
     text-style: underline;
 }
 
-/* ---------- Responsive layouts ---------- */
+/* ---------- Responsive ---------- */
 
 Screen.-narrow #body,
 Screen.-tiny #body {
@@ -311,15 +390,24 @@ Screen.-tiny #body {
 Screen.-narrow #sidebar,
 Screen.-tiny #sidebar {
     width: 100%;
-    height: auto;
-    max-height: 20;
-    margin: 0 0 1 0;
+    min-width: 0;
+    height: 14;
+    margin: 0;
 }
 
 Screen.-narrow #content,
 Screen.-tiny #content {
     width: 100%;
+    height: 1fr;
     grid-size: 1 4;
     grid-columns: 1fr;
     grid-rows: 1fr 1fr 1fr 1fr;
+}
+
+Screen.-tiny #sidebar {
+    display: none;
+}
+
+Screen.-tiny #footer-location {
+    display: none;
 }

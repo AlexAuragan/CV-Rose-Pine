@@ -1,4 +1,3 @@
-
 from collections.abc import Callable, Iterable
 from typing import Any
 
@@ -26,8 +25,8 @@ class DescriptionWidget(Vertical):
         self,
         value: Serializable,
         language: Language,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.value = value
         self.language: Language = language
@@ -38,14 +37,14 @@ class DescriptionWidget(Vertical):
 
         if isinstance(value, str):
             yield Static(
-                f"• {value}",
+                f"· {value}",
                 classes="description-line",
             )
             return
 
         if isinstance(value, HyperLink):
             yield Link(
-                f"↗ {value.title(self.language)}",
+                f"-> {value.title(self.language)}",
                 url=value.url,
                 classes="description-link",
             )
@@ -62,7 +61,7 @@ class DescriptionWidget(Vertical):
         title, child = value
 
         yield Static(
-            f"◆ {title}",
+            f":: {title}",
             classes="description-group-title",
         )
 
@@ -72,14 +71,15 @@ class DescriptionWidget(Vertical):
             classes="description-children",
         )
 
+
 class TagRow(Horizontal):
     def __init__(
         self,
         label: str,
         values: list[str] | list[Tool],
         language: Language,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.label = label
         self.values = values
@@ -88,7 +88,7 @@ class TagRow(Horizontal):
 
     def compose(self) -> ComposeResult:
         yield Static(
-            self.label,
+            f"{self.label}:",
             classes="tag-label",
         )
 
@@ -105,13 +105,14 @@ class TagRow(Horizontal):
                     classes="tag",
                 )
 
+
 class LinksRow(Horizontal):
     def __init__(
         self,
         links: list[HyperLink],
         language: Language,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.links = links
         self.language: Language = language
@@ -119,16 +120,17 @@ class LinksRow(Horizontal):
 
     def compose(self) -> ComposeResult:
         yield Static(
-            "links",
+            "links:",
             classes="links-label",
         )
 
         for link in self.links:
             yield Link(
-                f"↗ {link.title(self.language)}",
+                f"-> {link.title(self.language)}",
                 url=link.url,
                 classes="external-link",
             )
+
 
 class PostWidget(Vertical):
     can_focus = True
@@ -137,12 +139,12 @@ class PostWidget(Vertical):
         self,
         post: Post,
         language: Language = "fr",
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.post = post
         self.language: Language = language
-        self.add_class("post")
+        self.add_class("entry", "post")
 
     def compose(self) -> ComposeResult:
         with Horizontal(classes="card-header"):
@@ -195,6 +197,7 @@ class PostWidget(Vertical):
                 self.language,
             )
 
+
 class ProjectWidget(Vertical):
     can_focus = True
 
@@ -202,12 +205,12 @@ class ProjectWidget(Vertical):
         self,
         project: PersonalProject,
         language: Language = "fr",
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.project = project
         self.language: Language = language
-        self.add_class("project")
+        self.add_class("entry", "project")
 
     def compose(self) -> ComposeResult:
         with Horizontal(classes="card-header"):
@@ -253,15 +256,18 @@ class ProjectWidget(Vertical):
                 self.language,
             )
 
+
 class StudyWidget(Vertical):
+    can_focus = True
+
     def __init__(
         self,
         study: Study,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.study = study
-        self.add_class("study")
+        self.add_class("entry", "study")
 
     def compose(self) -> ComposeResult:
         yield Static(
@@ -287,17 +293,20 @@ class StudyWidget(Vertical):
                 classes="study-tags",
             )
 
+
 class MiscWidget(Vertical):
+    can_focus = True
+
     def __init__(
         self,
         item: MiscItem,
         language: Language = "fr",
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.item = item
         self.language: Language = language
-        self.add_class("misc")
+        self.add_class("entry", "misc")
 
     def compose(self) -> ComposeResult:
         yield Static(
@@ -323,15 +332,18 @@ class MiscWidget(Vertical):
                 self.language,
             )
 
+
 class ProfileWidget(Vertical):
+    can_focus = True
+
     def __init__(
         self,
         profile: Profile,
         **kwargs: Any,
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         self.profile = profile
-        self.border_title = "Profile"
+        self.border_title = " profile "
 
     def compose(self) -> ComposeResult:
         if self.profile.ascii_art:
@@ -359,13 +371,13 @@ class ProfileWidget(Vertical):
             with Vertical(classes="profile-highlights"):
                 for highlight in self.profile.highlights:
                     yield Static(
-                        highlight,
+                        f"> {highlight}",
                         classes="profile-highlight",
                     )
 
         if self.profile.current:
             yield Static(
-                "CURRENTLY",
+                ":: currently",
                 classes="profile-current-label",
             )
 
@@ -374,9 +386,9 @@ class ProfileWidget(Vertical):
                 classes="profile-current",
             )
 
+
 class SectionPanel(VerticalScroll):
-    """A scrollable subdivision of the main area. Focus it with the
-    arrows (nav mode), press enter to browse inside, escape to go back."""
+    """A scrollable resume section with Superfile-like pane framing."""
 
     can_focus = True
 
@@ -385,15 +397,16 @@ class SectionPanel(VerticalScroll):
         title: str,
         builders: Iterable[Callable[[], Widget]],
         **kwargs: Any,
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         self.panel_title = title
         self.builders: list[Callable[[], Widget]] = list(builders)
-        self.border_title = title
+        self.border_title = f" {title} "
+        self.add_class("section-panel")
 
     def compose(self) -> ComposeResult:
         if not self.builders:
-            yield Static("empty · nothing to show yet", classes="section-empty")
+            yield Static("-- empty --", classes="section-empty")
             return
 
         for builder in self.builders:
@@ -405,7 +418,7 @@ class NavigationBar(Horizontal):
         self,
         controls: list[str],
         **kwargs: Any,
-    ):
+    ) -> None:
         super().__init__(**kwargs)
         self.controls = controls
         self.location_text = ""
@@ -418,8 +431,12 @@ class NavigationBar(Horizontal):
 
     def update_controls(self, controls: list[str]) -> None:
         self.controls = controls
-        self.query_one("#footer-hints").remove_children()
-        self.mount_all(Static(binding, classes="contact-item") for binding in controls)
+        hints = self.query_one("#footer-hints")
+        hints.remove_children()
+        hints.mount_all(
+            Static(binding, classes="contact-item")
+            for binding in controls
+        )
 
     def set_location(self, text: str) -> None:
         self.location_text = text
