@@ -2,7 +2,7 @@ from collections.abc import Callable, Iterable
 from typing import Any
 
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.containers import Horizontal, Vertical, VerticalGroup
 from textual.css.query import NoMatches
 from textual.widget import Widget
 from textual.widgets import Link, Static
@@ -387,8 +387,8 @@ class ProfileWidget(Vertical):
             )
 
 
-class SectionPanel(VerticalScroll):
-    """A scrollable resume section with Superfile-like pane framing."""
+class SectionPanel(VerticalGroup):
+    """An expanded resume section; the right-hand column owns scrolling."""
 
     can_focus = True
 

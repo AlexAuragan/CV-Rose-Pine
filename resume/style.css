@@ -1,17 +1,19 @@
-/* Rosé Pine */
-$base: #191724;
-$surface: #26233a;
-$overlay: #26233a;
+/* Rosé Pine Moon-ish neutrals: brighter than the original Rosé Pine base. */
+$base: #232136;
+$surface: #2a273f;
+$overlay: #393552;
 $muted: #6e6a86;
 $subtle: #908caa;
 $text: #e0def4;
 $love: #eb6f92;
 $gold: #f6c177;
-$rose: #ebbcba;
-$pine: #31748f;
+$rose: #ea9a97;
+$pine: #3e8fb0;
 $foam: #9ccfd8;
 $iris: #c4a7e7;
-$highlight: #403d52;
+$highlight-low: #2a283e;
+$highlight-med: #44415a;
+$highlight-high: #56526e;
 
 $background: $base;
 $foreground: $text;
@@ -21,18 +23,14 @@ $secondary: $foam;
 $success: $pine;
 $warning: $gold;
 $error: $love;
-$boost: $surface;
-
-$accent-experience: $love;
-$accent-projects: $foam;
-$accent-studies: $rose;
-$accent-misc: $iris;
-
+$boost: $overlay;
 
 Screen {
     background: $base;
     color: $text;
 }
+
+/* ---------- Superfile-like shell ---------- */
 
 #body {
     width: 100%;
@@ -49,7 +47,7 @@ Screen {
     margin-right: 1;
     padding: 1 2;
     background: $surface;
-    border: round $highlight;
+    border: round $highlight-med;
     border-title-color: $muted;
     border-title-background: $surface;
     border-title-align: left;
@@ -64,24 +62,22 @@ Screen {
 #content {
     width: 1fr;
     height: 100%;
-    layout: grid;
-    grid-size: 1 4;
-    grid-columns: 1fr;
-    grid-rows: 1fr 1fr 1fr 1fr;
-    grid-gutter: 0;
     background: $base;
+    scrollbar-visibility: hidden;
 }
 
 .section-panel {
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: 4;
+    margin-bottom: 1;
     background: $surface;
-    border: round $highlight;
+    border: round $highlight-med;
     border-title-color: $muted;
     border-title-background: $surface;
     border-title-align: left;
     scrollbar-background: $surface;
-    scrollbar-color: $highlight;
+    scrollbar-color: $highlight-med;
     scrollbar-color-active: $foam;
     scrollbar-color-hover: $foam;
 }
@@ -113,7 +109,7 @@ Screen {
     height: 3;
     padding: 0 2;
     background: $surface;
-    border-top: solid $highlight;
+    border-top: solid $highlight-med;
 }
 
 #footer-location {
@@ -150,7 +146,7 @@ Screen {
     background: transparent;
     color: $text;
     text-style: bold;
-    border-bottom: solid $highlight;
+    border-bottom: solid $highlight-med;
     padding-bottom: 1;
     margin-bottom: 1;
 }
@@ -200,12 +196,12 @@ Screen {
 }
 
 .entry:hover {
-    background: $highlight;
+    background: $highlight-low;
     border-left: solid $subtle;
 }
 
 .entry:focus {
-    background: $highlight;
+    background: $highlight-med;
     border-left: solid $iris;
     color: $text;
 }
@@ -293,7 +289,7 @@ Link {
 }
 
 Link:hover {
-    background: $highlight;
+    background: $highlight-med;
     color: $rose;
     text-style: bold;
 }
@@ -347,7 +343,7 @@ Link:focus {
     background: transparent;
     margin-left: 2;
     padding-left: 1;
-    border-left: solid $highlight;
+    border-left: solid $highlight-med;
 }
 
 /* ---------- Tags ---------- */
@@ -399,9 +395,6 @@ Screen.-narrow #content,
 Screen.-tiny #content {
     width: 100%;
     height: 1fr;
-    grid-size: 1 4;
-    grid-columns: 1fr;
-    grid-rows: 1fr 1fr 1fr 1fr;
 }
 
 Screen.-tiny #sidebar {

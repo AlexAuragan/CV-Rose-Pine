@@ -7,7 +7,7 @@ from pathlib import Path
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Grid, Horizontal
+from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
 from textual.reactive import reactive
 from textual.widget import Widget
@@ -82,7 +82,7 @@ class Resume(App[None]):
         with Horizontal(id="body"):
             yield ProfileWidget(resume_fr.profile, id="sidebar")
 
-            with Grid(id="content"):
+            with VerticalScroll(id="content"):
                 yield SectionPanel(
                     "1 / experience",
                     [partial(PostWidget, post) for post in resume_fr.work_experience],
@@ -133,6 +133,16 @@ class Resume(App[None]):
     def _current_panel(self) -> SectionPanel:
         panels = self._panels()
         return panels[self.section_index % len(panels)]
+
+    def _content(self) -> VerticalScroll:
+        return self.query_one("#content", VerticalScroll)
+
+    def _reveal_section(self, panel: SectionPanel, *, pin: bool) -> None:
+        self._content().scroll_to_widget(
+            panel,
+            animate=True,
+            top=pin,
+        )
 
     def _entries(self, panel: SectionPanel) -> list[Widget]:
         return [child for child in panel.children if child.focusable]
@@ -211,7 +221,9 @@ class Resume(App[None]):
     def _move_between_sections(self, step: int) -> None:
         panels = self._panels()
         self.section_index = (self.section_index + step) % len(panels)
-        self._current_panel().focus()
+        panel = self._current_panel()
+        panel.focus()
+        self._reveal_section(panel, pin=False)
         self._sync_footer()
 
     def _move_between_entries(self, step: int) -> None:
@@ -236,10 +248,14 @@ class Resume(App[None]):
 
         if not entries:
             panel.focus()
+            self._reveal_section(panel, pin=True)
             return
 
-        entry_index = self.entry_indexes[self.section_index] % len(entries)
-        entries[entry_index].focus()
+        # Entering a section starts at its first entry and pins the whole
+        # section to the top of the right-hand viewport.
+        self.entry_indexes[self.section_index] = 0
+        entries[0].focus()
+        self._reveal_section(panel, pin=True)
         self._sync_footer()
 
     def action_leave_section(self) -> None:
@@ -256,7 +272,9 @@ class Resume(App[None]):
         self.section_index = index % len(panels)
         self.nav_area = "sections"
         self.mode = "nav"
-        self._current_panel().focus()
+        panel = self._current_panel()
+        panel.focus()
+        self._reveal_section(panel, pin=False)
         self._sync_panel_classes()
         self._sync_footer()
 
