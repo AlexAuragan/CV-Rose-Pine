@@ -1,0 +1,14 @@
+{
+  // basedpyright defaults are very strict; tune down the rules that don't
+  // fit a Textual codebase (kwargs-unaware typing of widget __init__, etc.)
+  "include": ["main.py", "resume"],
+  "typeCheckingMode": "standard",
+  "reportUnusedCallResult": false,
+  "reportImplicitOverride": false,
+  "reportUnannotatedClassAttribute": false,
+  "reportUnknownParameterType": false,
+  "reportUnknownArgumentType": false,
+  "reportMissingParameterType": false,
+  "reportAny": false,
+  "reportExplicitAny": false
+}
