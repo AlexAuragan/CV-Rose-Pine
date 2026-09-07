@@ -8,13 +8,13 @@ os.environ["COLORTERM"] = "truecolor"
 
 from functools import partial
 from pathlib import Path
+from unicodedata import combining, normalize
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
 from textual.reactive import reactive
-from unicodedata import combining, normalize
 
 # from textual.widget import Widget
 from textual.widgets import Input, Static
@@ -29,6 +29,7 @@ from resume.widgets import (
     ProjectWidget,
     SectionPanel,
     StudyWidget,
+    TagRow,
 )
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -41,7 +42,7 @@ HINTS = {
         "[bold #c4a7e7]←→ hl[/] [#908caa]pane[/]",
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]section[/]",
         "[bold #c4a7e7]↵[/] [#908caa]browse[/]",
-        "[bold #c4a7e7]/ f[/] [#908caa]grep[/]",
+        "[bold #c4a7e7]/ f[/] [#908caa]search[/]",
         "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
         "[bold #c4a7e7]0-4[/] [#908caa]jump[/]",
         "[bold #c4a7e7]q[/] [#908caa]quit[/]",
@@ -49,7 +50,7 @@ HINTS = {
     "inside": [
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]select[/]",
         "[bold #c4a7e7]← h[/] [#908caa]profile[/]",
-        "[bold #c4a7e7]/ f[/] [#908caa]grep[/]",
+        "[bold #c4a7e7]/ f[/] [#908caa]search[/]",
         "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
         "[bold #c4a7e7]tab[/] [#908caa]links[/]",
         "[bold #c4a7e7]esc[/] [#908caa]sections[/]",
@@ -73,18 +74,24 @@ class ResumeApp(App[None]):
     ]
 
     BINDINGS = [
-        Binding("up,k", "move_vertical(-1)", show=False, priority=True),
-        Binding("down,j", "move_vertical(1)", show=False, priority=True),
-        Binding("left,h", "move_pane(-1)", show=False, priority=True),
-        Binding("right,l", "move_pane(1)", show=False, priority=True),
-        Binding("r,R", "toggle_language", show=False, priority=True),
-        Binding("enter", "enter_section", show=False, priority=True),
-        Binding("escape", "leave_section", show=False, priority=True),
-        Binding("0", "profile", show=False, priority=True),
-        Binding("1", "jump(0)", show=False, priority=True),
-        Binding("2", "jump(1)", show=False, priority=True),
-        Binding("3", "jump(2)", show=False, priority=True),
-        Binding("4", "jump(3)", show=False, priority=True),
+        Binding("up,k", "move_vertical(-1)", show=False),
+        Binding("down,j", "move_vertical(1)", show=False),
+        Binding("left,h", "move_pane(-1)", show=False),
+        Binding("right,l", "move_pane(1)", show=False),
+        Binding("r,R", "toggle_language", show=False),
+        Binding("enter", "enter_section", show=False),
+        Binding("escape", "leave_section", show=False),
+
+        Binding("slash,f", "open_search", show=False),
+        Binding("n", "next_search(1)", show=False),
+        Binding("N", "next_search(-1)", show=False),
+
+        Binding("0", "profile", show=False),
+        Binding("1", "jump(0)", show=False),
+        Binding("2", "jump(1)", show=False),
+        Binding("3", "jump(2)", show=False),
+        Binding("4", "jump(3)", show=False),
+
         Binding("q", "quit", show=False),
     ]
 

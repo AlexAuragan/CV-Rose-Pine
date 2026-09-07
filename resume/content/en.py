@@ -1,5 +1,13 @@
 import resume.content.hyprlinks as links
-from resume.models import ContactInfo, MiscItem, PersonalProject, Post, Profile, Resume, Study
+from resume.models import (
+    ContactInfo,
+    MiscItem,
+    PersonalProject,
+    Post,
+    Profile,
+    Resume,
+    Study,
+)
 
 ## Jobs
 namr_en = Post(
