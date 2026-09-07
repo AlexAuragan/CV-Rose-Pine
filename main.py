@@ -87,7 +87,7 @@ class ResumeApp(App[None]):
         super().__init__()
         self.section_index = 0
         self.entry_indexes = [0 for _ in SECTION_IDS]
-        self.nav_area = "sections"
+        self.nav_area = "profile"
 
     def compose(self) -> ComposeResult:
         resume = resume_fr if self.language == "fr" else resume_en
@@ -132,7 +132,7 @@ class ResumeApp(App[None]):
         yield NavigationBar(HINTS[self.mode], id="footer")
 
     def on_mount(self) -> None:
-        self._current_panel().focus()
+        self._profile().focus()
         self._sync_panel_classes()
         self._sync_footer()
 

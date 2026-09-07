@@ -5,7 +5,13 @@ from typing import Any
 from rich.style import Style
 from rich.text import Text
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, VerticalGroup, VerticalScroll
+from textual.containers import (
+    Horizontal,
+    HorizontalGroup,
+    Vertical,
+    VerticalGroup,
+    VerticalScroll,
+)
 from textual.css.query import NoMatches
 from textual.widget import Widget
 from textual.widgets import Link, Rule, Static
@@ -397,6 +403,10 @@ class ProfileWidget(VerticalScroll):
         super().__init__(**kwargs)
         self.profile = profile
         self.border_title = " profile "
+        self.border_subtitle = ""
+
+    def on_mount(self) -> None:
+        self.call_after_refresh(self._update_scroll_markers)
 
     def compose(self) -> ComposeResult:
         if self.profile.ascii_art:
@@ -421,7 +431,7 @@ class ProfileWidget(VerticalScroll):
         )
 
         if self.profile.highlights:
-            with Vertical(classes="profile-highlights"):
+            with VerticalGroup(classes="profile-highlights"):
                 for highlight in self.profile.highlights:
                     yield Static(
                         f"> {highlight}",
@@ -447,7 +457,7 @@ class ProfileWidget(VerticalScroll):
                 classes="profile-contact-label",
             )
             for contact in self.profile.contact:
-                with Horizontal(classes="profile-contact-row"):
+                with HorizontalGroup(classes="profile-contact-row"):
                     yield Static(
                         f"{contact.label}:",
                         classes="profile-contact-key",
@@ -465,6 +475,16 @@ class ProfileWidget(VerticalScroll):
                             classes="profile-contact-value",
                         )
 
+    def _update_scroll_markers(self) -> None:
+        can_scroll_up = self.scroll_y > 0
+        can_scroll_down = self.scroll_y < self.max_scroll_y
+
+        self.border_title = " profile ^ " if can_scroll_up else " profile "
+        self.border_subtitle = " v " if can_scroll_down else ""
+
+    def watch_scroll_y(self, old_value: float, new_value: float) -> None:
+        super().watch_scroll_y(old_value, new_value)
+        self._update_scroll_markers()
 
 class SectionPanel(VerticalGroup):
     """An expanded resume section; the right-hand column owns scrolling."""

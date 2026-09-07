@@ -56,3 +56,11 @@ bricobot = HyperLink(
     "Bricobot", "Bricobot",
     "https://7fault.itch.io/bricobot"
 )
+
+hypnose_insta =HyperLink(
+    "Compte Instagram", "Instagram", "https://instagram.com/alexhypno6"
+)
+
+blog_hypnose = HyperLink(
+    "Blog Hypnose", "Blog", "https://hypnose.auragan.fr"
+)

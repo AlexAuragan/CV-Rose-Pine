@@ -51,6 +51,9 @@ Screen {
     border-title-color: $muted;
     border-title-background: $surface;
     border-title-align: left;
+    border-subtitle-color: $muted;
+    border-subtitle-background: $surface;
+    border-subtitle-align: center;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -65,7 +68,8 @@ Screen {
 
 #sidebar:focus {
     border: round $iris;
-    border-title-color: $iris;
+    border-title-color: $gold;
+    border-subtitle-color: $gold;
 }
 
 #content {
@@ -93,12 +97,14 @@ Screen {
 
 .section-panel:focus {
     border: round $iris;
-    border-title-color: $iris;
+    border-title-color: $gold;
+    border-subtitle-color: $gold;
 }
 
 .section-panel.-active {
     border: round $foam;
-    border-title-color: $foam;
+    border-title-color: $gold;
+    border-subtitle-color: $gold;
 }
 
 
@@ -200,6 +206,21 @@ Screen {
 
 .profile-contact {
     background: transparent;
+    color: $foam;
+}
+
+.profile-contact-row {
+    width: 100%;
+    height: auto;
+}
+
+.profile-contact-key {
+    width: 10;
+    color: $subtle;
+}
+
+.profile-contact-value {
+    width: auto;
     color: $foam;
 }
 

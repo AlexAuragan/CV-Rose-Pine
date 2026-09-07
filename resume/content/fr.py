@@ -1,5 +1,5 @@
 import resume.content.hyprlinks as links
-from resume.models import ContactInfo, PersonalProject, Post, Profile, Resume, Study
+from resume.models import ContactInfo, MiscItem, PersonalProject, Post, Profile, Resume, Study
 
 ## Jobs
 namr_fr = Post(
@@ -179,6 +179,10 @@ league_ai_fr = PersonalProject(
     tools=["VAE (Variational Auto-Encoder)"]
 )
 
+hypnose_fr = MiscItem(
+    "Hypnose de rue", "Je pratique l'hypnose de rue depuis 12 ans maintenant, et je poste les vidéos qu'on m'envoie sur Instagram !",
+    links=[links.hypnose_insta, links.blog_hypnose],
+)
 
 resume_fr = Resume(
     profile=Profile(
@@ -232,5 +236,5 @@ resume_fr = Resume(
         master_sherbrooke_fr,
         enseeiht_fr,
     ],
-    misc=[],
+    misc=[hypnose_fr],
 )
