@@ -267,6 +267,13 @@ class ResumeApp(App[None]):
         if self.search_mode:
             return
 
+        if self.nav_area == "profile":
+            if step < 0:
+                self.profile.scroll_up(animate=False)
+            else:
+                self.profile.scroll_down(animate=False)
+            return
+
         if self.mode == "inside":
             self._move_between_entries(step)
             return
