@@ -73,9 +73,7 @@ class DescriptionWidget(Vertical):
         self.language: Language = language
         self.add_class("description")
 
-    def compose(self) -> ComposeResult:
-        value = self.value
-
+    def _widgets_for(self, value: Serializable) -> Iterable[Widget]:
         if isinstance(value, str):
             yield Static(
                 f"· {value}",
@@ -93,10 +91,7 @@ class DescriptionWidget(Vertical):
 
         if isinstance(value, list):
             for item in value:
-                yield DescriptionWidget(
-                    item,
-                    self.language,
-                )
+                yield from self._widgets_for(item)
             return
 
         title, child = value
@@ -112,6 +107,8 @@ class DescriptionWidget(Vertical):
             classes="description-children",
         )
 
+    def compose(self) -> ComposeResult:
+        yield from self._widgets_for(self.value)
 
 class TagRow(Static):
     def __init__(

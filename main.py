@@ -286,14 +286,15 @@ class ResumeApp(App[None]):
         if step > 0 and self.nav_area == "profile":
             self.nav_area = "sections"
             self.mode = "nav"
-            self._current_panel().focus()
+            self._current_panel().focus(scroll_visible=False)
             self._sync_footer()
 
     def _move_between_sections(self, step: int) -> None:
         self.section_index = (self.section_index + step) % len(self.panels)
+
         panel = self._current_panel()
-        panel.focus()
-        self._reveal_section(panel, pin=False)
+        panel.focus(scroll_visible=False)
+
         self._sync_footer()
 
     def _move_between_entries(self, step: int) -> None:
@@ -317,14 +318,13 @@ class ResumeApp(App[None]):
         self.mode = "inside"
 
         if not entries:
-            panel.focus()
+            panel.focus(scroll_visible=False)
             self._reveal_section(panel, pin=True)
             return
 
-        # Entering a section starts at its first entry and pins the whole
-        # section to the top of the right-hand viewport.
         self.entry_indexes[self.section_index] = 0
-        entries[0].focus()
+        entries[0].focus(scroll_visible=False)
+
         self._reveal_section(panel, pin=True)
         self._sync_footer()
 
@@ -347,9 +347,10 @@ class ResumeApp(App[None]):
         self.section_index = index % len(self.panels)
         self.nav_area = "sections"
         self.mode = "nav"
+
         panel = self._current_panel()
-        panel.focus()
-        self._reveal_section(panel, pin=False)
+        panel.focus(scroll_visible=False)
+
         self._sync_panel_classes()
         self._sync_footer()
 
