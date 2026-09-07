@@ -74,10 +74,18 @@ class ResumeApp(App[None]):
     ]
 
     BINDINGS = [
-        Binding("up,k", "move_vertical(-1)", show=False),
-        Binding("down,j", "move_vertical(1)", show=False),
-        Binding("left,h", "move_pane(-1)", show=False),
-        Binding("right,l", "move_pane(1)", show=False),
+        Binding("up", "move_vertical(-1)", show=False, priority=True),
+        Binding("k", "move_vertical(-1)", show=False),
+
+        Binding("down", "move_vertical(1)", show=False, priority=True),
+        Binding("j", "move_vertical(1)", show=False),
+
+        Binding("left", "move_pane(-1)", show=False, priority=True),
+        Binding("h", "move_pane(-1)", show=False),
+
+        Binding("right", "move_pane(1)", show=False, priority=True),
+        Binding("l", "move_pane(1)", show=False),
+
         Binding("r,R", "toggle_language", show=False),
         Binding("enter", "enter_section", show=False),
         Binding("escape", "leave_section", show=False),
@@ -258,15 +266,9 @@ class ResumeApp(App[None]):
     def action_move_vertical(self, step: int) -> None:
         if self.search_mode:
             return
+
         if self.mode == "inside":
             self._move_between_entries(step)
-            return
-
-        if self.nav_area == "profile":
-            if step < 0:
-                self.profile.scroll_up(animate=False)
-            else:
-                self.profile.scroll_down(animate=False)
             return
 
         self._move_between_sections(step)
@@ -291,12 +293,13 @@ class ResumeApp(App[None]):
 
     def _move_between_sections(self, step: int) -> None:
         self.section_index = (self.section_index + step) % len(self.panels)
+        self.nav_area = "sections"
 
         panel = self._current_panel()
         panel.focus(scroll_visible=False)
 
+        self._reveal_section(panel, pin=True)
         self._sync_footer()
-
     def _move_between_entries(self, step: int) -> None:
         panel = self._current_panel()
         entries = self._entries(panel)
