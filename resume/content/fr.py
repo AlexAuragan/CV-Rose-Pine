@@ -1,29 +1,46 @@
 import resume.content.hyprlinks as links
-from resume.models import PersonalProject, Post, Profile, Resume, Study
+from resume.models import ContactInfo, PersonalProject, Post, Profile, Resume, Study
 
 ## Jobs
+namr_fr = Post(
+    title="Data Scientist",
+    company="nam.R",
+    company_link=links.namr,
+    start_month="Mars 2026",
+    end_month="Juillet 2026",
+    desc=[
+        "[italic #c4a7e7]Tâches très variées jusqu'à la liquidation de nam.R sans gros projet[/]",
+        "Réécriture de librairies internes pour diminuer la dette technique",
+        "Scraping de données géographiques",
+        "Déploiement d'entraînement de modèles sur GCP"
+    ],
+    skills=["Déploiement", "Entraînement ML/DL", "Scrapping", "Géodata"],
+    tools=["GCP", "DBeaver", "QGIS"],
+    region="Paris, France"
+)
+
 trickstr_fr = Post(
     title="Consultant IA / Data scientist",
     company="Trickstr (Startup de Vectors)",
     company_link=links.trickstr,
-    start_month="Janvier 2025",
-    end_month="Mars 2025",
+    start_month="Janvier 2026",
+    end_month="Mars 2026",
     desc=[
         ("Automatisation en interne de reporting", [
             "Étude du besoin avec les consultants Vectors",
             "Développement d'une app Streamlit",
             "Déploiement sécurisé en interne"
         ]),
-        ("Étude des biais politques des IA", [
+        ("Étude des biais politiques des IA", [
             "Mise en place d'une méthode scientifique pour évaluer de façon la plus neutre possible les 'opinions' des LLMs.",
-            "Création de métriques et d'indice pour comparer les 'opinions' des IA avec celles de la population française",
-            "Sondage de masse de nombreux modèles de langages avec différentes modalités (personnas, géo-localisation, langue, ...)",
+            "Création de métriques et d'indices pour comparer les 'opinions' des IA avec celles de la population française",
+            "Sondage de masse de nombreux modèles de langage avec différentes modalités (personas, géolocalisation, langue, ...)",
             links.ai_bias_article
         ])
         ,
         ("Étude 'IA Réputation'", [
             "Généralisation de l'étude précédente aux marques, produits, personnes, etc",
-            "Création de rapport détaillés, benchmark et graphiques",
+            "Création de rapports détaillés, benchmark et graphiques",
             links.benchmark_airep_cac40,
 
         ]),
@@ -38,21 +55,21 @@ vectors_fr = Post(
     company="Vectors",
     company_link=links.vectors,
     start_month="Mai 2023",
-    end_month="Décembre 2024",
+    end_month="Décembre 2025",
     desc=[
-        "Optimization de processus interne grace à l'IA",
-        "Scrapping de masse de données pour divers projets (ex: les CP des sites du CAC40)",
+        "Optimization de processus internes grâce à l'IA",
+        "Scraping massif de données pour divers projets (ex: les CP des sites du CAC40)",
         "Études data sur les performances réseaux sociaux de nos clients",
-        ("Mise en place d'une platforme pour détecter les posts parlant des JO de Paris 2024", [
+        ("Mise en place d'une plateforme pour détecter les posts parlant des JO de Paris 2024", [
             "Le but est de détecter les posts des concurrents de Carrefour",
-            "Mise en place de la liste des adresses des toutes les enseignes de Carrefour et de ses concurrents",
+            "Mise en place de la liste des adresses de toutes les enseignes de Carrefour et de ses concurrents",
             "Lien entre les adresses physiques et des pages Facebook / Instagram / X / Tiktok",
-            "Entrainement d'IA pour détecter le merch JO sur les photos",
+            "Entraînement d'IA pour détecter le merch JO sur les photos",
             "Déploiement d'une plateforme streamlit pour browser les posts suspects"
         ])
     ],
     tools=["Neo4j", "elasticsearch", "streamlit", "Midjourney", "Elevenlabs"],
-    skills=["R&D", "Conseil", "Étude de problèmes", "Étude de faisabilité", "Suivis de l'état de l'art", "Web scraping", "Visualization de données",
+    skills=["R&D", "Conseil", "Étude de problèmes", "Étude de faisabilité", "Suivi de l'état de l'art", "Web scraping", "Visualisation de données",
             "Prompt Engineering"],
     region="Paris, France"
 )
@@ -66,26 +83,26 @@ kitware_fr = Post(
     desc=[
         ("Segmentation d'images rayon-X", [
             "Utilisation du modèle Mask-RCNN",
-            "Modification de métriques interne au modèle pour répondre aux spécificité des images rayon-X (chevauchement)",
-            "Benchmark et création d'une boucle d'entrainement pour des données sensibles",
+            "Modification de métriques internes au modèle pour répondre aux spécificités des images rayon-X (chevauchement)",
+            "Benchmark et création d'une boucle d'entraînement pour des données sensibles",
         ]),
-        ("Classification de fichier DICOM", [
+        ("Classification de fichiers DICOM", [
             "Les DICOM sont de très gros fichiers médicaux sous forme key-value pair",
             "Tokenization de champs textuels",
-            "Utilisation de random forest pour trouver les champs d'intérêts",
+            "Utilisation de random forest pour trouver les champs d'intérêt",
             "Petit modèle pour la classification d'images 3D"
         ]),
-        "Implementation d'un filtre 3D en Pytorch (Compatible GPU)",
+        "Implémentation d'un filtre 3D en PyTorch (Compatible GPU)",
     ],
-    tools=["Pytorch", "Mask-RCNN", "Random Forest"],
+    tools=["PyTorch", "Mask-RCNN", "Random Forest"],
     skills=["Classification", "Modification de modèles","Calcul Vectoriel", "Vision par ordinateur"],
     region="Lyon, France"
 )
 
 ## Studies
 master_sherbrooke_fr = Study(
-    "Maîtrise - Université de Sherbrook",
-    "Gesion de l'ingénierie",
+    "Maîtrise - Université de Sherbrooke",
+    "Gestion de l'ingénierie",
     "Montréal, Canada",
     ["Droit", "Finance", "Gestion d'équipe", "Leadership", "Gestion de projet", "créativité", "Communication", "Négociation"]
 )
@@ -102,22 +119,22 @@ enseeiht_fr = Study(
 homelab_fr = PersonalProject(
     title="Homelab Proxmox",
     desc=[
-        "Déploiement et maintien d'une flotte d'une trentaine de VM linux",
-        "Développement et déloiement d'outils custom"
+        "Déploiement et maintien d'une flotte d'une trentaine de VM Linux",
+        "Développement et déploiement d'outils custom"
      ],
     modality="Solo",
     year="2024 - Aujourd'hui",
-    tools=["Proxmox", "Meillisearch", "PostgreSQL",
-           "Minio", "Caddy", "Crowdec", "Pihole", "Vector", "Grafana", "UptimeKuma",
+    tools=["Proxmox", "Meilisearch", "PostgreSQL",
+           "Minio", "Caddy", "CrowdSec", "Pi-hole", "Vector", "Grafana", "UptimeKuma",
            links.pipechecker, links.filekeeper],
     skills=["DNS", "Reverse Proxy", "Virtual Machine", "Déploiement", "Notifications", "Maintenance", "Network"]
 )
 
 frataga_fr = PersonalProject(
-    title="Frataga - Moteur de recherche d'archetypes DnD",
+    title="Frataga - Moteur de recherche d'archétypes DnD",
     desc=[
-        "Création d'archetypes (une collection DnD et une collection divinitées grecques)",
-        "Vectorisation des archetypes et d'une requête utilisateur + vecteur search",
+        "Création d'archétypes (une collection DnD et une collection de divinités grecques)",
+        "Vectorisation des archétypes et d'une requête utilisateur + vecteur search",
         "Déploiement d'une interface Streamlit"
     ],
     modality="Duo",
@@ -130,11 +147,11 @@ frataga_fr = PersonalProject(
 deepfakes_fr = PersonalProject(
     title="Génération de faux visages par GAN",
     desc=[
-        "Première version en 2022 avec des résultats peut concluants",
-        "Deuxième version en 2025 avec un vrai entrainement sur GPU dédié avec de bien meilleurs résultats",
+        "Première version en 2022 avec des résultats peu concluants",
+        "Deuxième version en 2025 avec un vrai entraînement sur GPU dédié avec de bien meilleurs résultats",
     ],
     tools=["Generative Adversarial Network", "Weights and biasses"],
-    skills=["Entrainement de model d'IA", "Évaluation d'entrainement"],
+    skills=["entraînement de modèle d'IA", "Évaluation d'entraînement"],
     modality="Solo",
     year="2022 et 2025",
 )
@@ -142,13 +159,13 @@ deepfakes_fr = PersonalProject(
 prez_7fault_fr = PersonalProject(
     "Président de 7Fault, club de Game Dev de l'ENSEEIHT",
     desc=[
-        ("Jeux sur lesquels j'ai travaillé disponnibles lors de Game jams:", [
+        ("Jeux sur lesquels j'ai travaillé disponibles lors de Game jams:", [
             links.jump_slime_jump, links.loading, links.bricobot
         ])
     ],
     modality="Équipe de 3 à 5",
     year="2020 - 2021",
-    skills=["Game Dev", "Design Patern", "Pixel art", "Musique"],
+    skills=["Game Dev", "Design Pattern", "Pixel art", "Musique"],
     tools=["Unity", "Bosca Ceoil",  "FLStudio"]
 )
 
@@ -156,8 +173,8 @@ league_ai_fr = PersonalProject(
     "IA stratégique sur League of Legends",
     year=2020,
     modality="Duo",
-    desc=["Le but était d'optimiser la sélection de personnage dans League of Legends",
-          "Nous avons tester diverses méthodes pour vectoriser les personnage pour pouvoir les comparer"],
+    desc=["Le but était d'optimiser la sélection de personnages dans League of Legends",
+          "Nous avons testé diverses méthodes pour vectoriser les personnages pour pouvoir les comparer"],
     skills=["Vectorisation", "Analyse statistique", "Théorie des jeux"],
     tools=["VAE (Variational Auto-Encoder)"]
 )
@@ -186,12 +203,20 @@ resume_fr = Resume(
 ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⢻⣿⣿⠁⠀⢀⠈⢿⣿⣿⣿⣿⣿⣿
         """,
         highlights=[
-            "Trop fort en python",
+            "Trop fort en Python",
             "Hypnotiseur de rue",
+            "Passionné des sciences du numérique"
         ],
         current="Cherche à travailler dans la R&D en IA",
+        contact=[
+            ContactInfo("@ Email", "alex@auragan.fr", url="mailto:alex@auragan.fr"),
+            ContactInfo("✆ Tel", "06 33 02 82 75", url="tel:+33633038357"),
+            ContactInfo("⛴ Github", "AlexAuragan", url="https://github.com/AlexAuragan"),
+            ContactInfo("♠ Website", "auragan.fr", url="https://auragan.fr")
+        ]
     ),
     work_experience=[
+        namr_fr,
         trickstr_fr,
         vectors_fr,
         kitware_fr,
@@ -208,5 +233,4 @@ resume_fr = Resume(
         enseeiht_fr,
     ],
     misc=[],
-    contacts=[],
 )

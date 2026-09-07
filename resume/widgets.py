@@ -1,11 +1,14 @@
+import os
 from collections.abc import Callable, Iterable
 from typing import Any
 
+from rich.style import Style
+from rich.text import Text
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, VerticalGroup
+from textual.containers import Horizontal, Vertical, VerticalGroup, VerticalScroll
 from textual.css.query import NoMatches
 from textual.widget import Widget
-from textual.widgets import Link, Static
+from textual.widgets import Link, Rule, Static
 
 from resume.models import (
     HyperLink,
@@ -19,6 +22,38 @@ from resume.models import (
     Tool,
 )
 
+
+class ClientLink(Link):
+    """Textual link + native OSC 8 hyperlink for SSH clients."""
+
+    def watch_text(self, text: str) -> None:
+        self.update(
+            Text(
+                text,
+                style=Style(link=self.url or None),
+            )
+        )
+
+    def watch_url(self, url: str) -> None:
+        self.update(
+            Text(
+                self.text,
+                style=Style(link=url or None),
+            )
+        )
+
+    def action_open_link(self) -> None:
+        if not self.url:
+            return
+
+        # Textual Web can open the visitor's browser correctly.
+        if self.app.is_web:
+            self.app.open_url(self.url)
+            return
+
+        # A directly launched local TUI can open the local browser.
+        if "SSH_CONNECTION" not in os.environ:
+            self.app.open_url(self.url)
 
 class DescriptionWidget(Vertical):
     def __init__(
@@ -43,7 +78,7 @@ class DescriptionWidget(Vertical):
             return
 
         if isinstance(value, HyperLink):
-            yield Link(
+            yield ClientLink(
                 f"-> {value.title(self.language)}",
                 url=value.url,
                 classes="description-link",
@@ -72,7 +107,7 @@ class DescriptionWidget(Vertical):
         )
 
 
-class TagRow(Horizontal):
+class TagRow(Static):
     def __init__(
         self,
         label: str,
@@ -86,25 +121,41 @@ class TagRow(Horizontal):
         self.language: Language = language
         self.add_class("tag-row")
 
-    def compose(self) -> ComposeResult:
-        yield Static(
-            f"{self.label}:",
-            classes="tag-label",
-        )
+    def render(self) -> Text:
+            line = Text()
 
-        for value in self.values:
-            if isinstance(value, HyperLink):
-                yield Link(
-                    value.title(self.language),
-                    url=value.url,
-                    classes="tag tag-link",
-                )
-            else:
-                yield Static(
-                    value,
-                    classes="tag",
-                )
+            line.append(
+                f"{self.label}: ",
+                style=Style(
+                    color="#908caa",
+                    italic=True,
+                ),
+            )
 
+            for value in self.values:
+                if isinstance(value, HyperLink):
+                    line.append(
+                        f" {value.title(self.language)} ",
+                        style=Style(
+                            color="#9ccfd8",
+                            bgcolor="#393552",
+                            underline=True,
+                            link=value.url,
+                        ),
+                    )
+                else:
+                    line.append(
+                        f" {value} ",
+                        style=Style(
+                            color="#ea9a97",
+                            bgcolor="#393552",
+                        ),
+                    )
+
+                # Important: wrapping happens at this space.
+                line.append(" ")
+
+            return line
 
 class LinksRow(Horizontal):
     def __init__(
@@ -125,7 +176,7 @@ class LinksRow(Horizontal):
         )
 
         for link in self.links:
-            yield Link(
+            yield ClientLink(
                 f"-> {link.title(self.language)}",
                 url=link.url,
                 classes="external-link",
@@ -159,7 +210,7 @@ class PostWidget(Vertical):
             )
 
         with Horizontal(classes="card-meta"):
-            yield Link(
+            yield ClientLink(
                 self.post.company,
                 url=self.post.company_link.url,
                 classes="company-link",
@@ -263,10 +314,12 @@ class StudyWidget(Vertical):
     def __init__(
         self,
         study: Study,
+        language: Language,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
         self.study = study
+        self.language: Language = language
         self.add_class("entry", "study")
 
     def compose(self) -> ComposeResult:
@@ -289,7 +342,7 @@ class StudyWidget(Vertical):
             yield TagRow(
                 "topics",
                 self.study.tags,
-                "fr",
+                self.language,
                 classes="study-tags",
             )
 
@@ -333,7 +386,7 @@ class MiscWidget(Vertical):
             )
 
 
-class ProfileWidget(Vertical):
+class ProfileWidget(VerticalScroll):
     can_focus = True
 
     def __init__(
@@ -385,6 +438,32 @@ class ProfileWidget(Vertical):
                 self.profile.current,
                 classes="profile-current",
             )
+
+        yield Rule()
+
+        if self.profile.contact:
+            yield Static(
+                ":: contact",
+                classes="profile-contact-label",
+            )
+            for contact in self.profile.contact:
+                with Horizontal(classes="profile-contact-row"):
+                    yield Static(
+                        f"{contact.label}:",
+                        classes="profile-contact-key",
+                    )
+
+                    if contact.url:
+                        yield ClientLink(
+                            contact.value,
+                            url=contact.url,
+                            classes="profile-contact-value",
+                        )
+                    else:
+                        yield Static(
+                            contact.value,
+                            classes="profile-contact-value",
+                        )
 
 
 class SectionPanel(VerticalGroup):

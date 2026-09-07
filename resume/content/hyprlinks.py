@@ -1,6 +1,9 @@
 from resume.models import HyperLink
 
 ## Hyperlinks
+namr = HyperLink(
+    "nam.R", "nam.R", "https://namr.com/"
+)
 ai_bias_article = HyperLink(
     title_fr="Article sur les biais politiques des IA parut sur BFMTV",
     title_en="Article about AI political biasses on BFMTV",

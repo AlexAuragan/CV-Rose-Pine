@@ -1,10 +1,6 @@
 
 from dataclasses import dataclass, field
 from typing import Literal
-from rich.align import Align
-from rich.console import Group, RenderableType
-from rich.rule import Rule
-from rich.text import Text
 
 type Language = Literal["en", "fr"]
 
@@ -78,12 +74,19 @@ class PersonalProject:
 
 
 @dataclass(frozen=True)
+class ContactInfo:
+    label: str
+    value: str
+    url: str | None = None
+
+@dataclass(frozen=True)
 class Profile:
     name: str
     title: str
     region: str
     ascii_art: str = ""
     highlights: list[str] = field(default_factory=list)
+    contact: list[ContactInfo] = field(default_factory=list)
     current: str | None = None
 
 
@@ -95,11 +98,6 @@ class MiscItem:
     links: list[HyperLink] = field(default_factory=list)
 
 
-@dataclass(frozen=True)
-class ContactInfo:
-    label: str
-    value: str
-    url: str | None = None
 
 
 @dataclass(frozen=True)
@@ -109,5 +107,4 @@ class Resume:
     personal_projects: list[PersonalProject]
     misc: list[MiscItem]
     studies: list[Study] = field(default_factory=list)
-    contacts: list[ContactInfo] = field(default_factory=list)
     links: list[HyperLink] = field(default_factory=list)

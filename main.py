@@ -2,6 +2,8 @@ import os
 
 from textual.widget import Widget
 
+from resume.models import Language
+
 os.environ["COLORTERM"] = "truecolor"
 
 from functools import partial
@@ -12,9 +14,11 @@ from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
 from textual.reactive import reactive
+
 # from textual.widget import Widget
 from textual.widgets import Static
 
+from resume.content.en import resume_en
 from resume.content.fr import resume_fr
 from resume.widgets import (
     MiscWidget,
@@ -36,12 +40,14 @@ HINTS = {
         "[bold #c4a7e7]←→ hl[/] [#908caa]pane[/]",
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]section[/]",
         "[bold #c4a7e7]↵[/] [#908caa]browse[/]",
-        "[bold #c4a7e7]1-4[/] [#908caa]jump[/]",
+        "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
+        "[bold #c4a7e7]0-4[/] [#908caa]jump[/]",
         "[bold #c4a7e7]q[/] [#908caa]quit[/]",
     ],
     "inside": [
         "[bold #c4a7e7]↑↓ jk[/] [#908caa]select[/]",
         "[bold #c4a7e7]← h[/] [#908caa]profile[/]",
+        "[bold #c4a7e7]R[/] [#908caa]FR/EN[/]",
         "[bold #c4a7e7]tab[/] [#908caa]links[/]",
         "[bold #c4a7e7]esc[/] [#908caa]sections[/]",
         "[bold #c4a7e7]q[/] [#908caa]quit[/]",
@@ -49,7 +55,7 @@ HINTS = {
 }
 
 
-class Resume(App[None]):
+class ResumeApp(App[None]):
     HORIZONTAL_BREAKPOINTS = [
         (0, "-tiny"),
         (65, "-narrow"),
@@ -61,8 +67,10 @@ class Resume(App[None]):
         Binding("down,j", "move_vertical(1)", show=False, priority=True),
         Binding("left,h", "move_pane(-1)", show=False, priority=True),
         Binding("right,l", "move_pane(1)", show=False, priority=True),
+        Binding("r,R", "toggle_language", show=False, priority=True),
         Binding("enter", "enter_section", show=False, priority=True),
         Binding("escape", "leave_section", show=False, priority=True),
+        Binding("0", "profile", show=False, priority=True),
         Binding("1", "jump(0)", show=False, priority=True),
         Binding("2", "jump(1)", show=False, priority=True),
         Binding("3", "jump(2)", show=False, priority=True),
@@ -71,6 +79,7 @@ class Resume(App[None]):
     ]
 
     mode = reactive("nav")
+    language: reactive[Language] = reactive("fr", recompose=True)
 
     CSS = CSS
 
@@ -81,32 +90,46 @@ class Resume(App[None]):
         self.nav_area = "sections"
 
     def compose(self) -> ComposeResult:
+        resume = resume_fr if self.language == "fr" else resume_en
+
         with Horizontal(id="body"):
-            yield ProfileWidget(resume_fr.profile, id="sidebar")
+            yield ProfileWidget(resume.profile, id="sidebar")
 
             with VerticalScroll(id="content"):
                 yield SectionPanel(
                     "1 / experience",
-                    [partial(PostWidget, post) for post in resume_fr.work_experience],
+                    [
+                        partial(PostWidget, post, self.language)
+                        for post in resume.work_experience
+                    ],
                     id="panel-experience",
                 )
                 yield SectionPanel(
                     "2 / projects",
-                    [partial(ProjectWidget, project) for project in resume_fr.personal_projects],
+                    [
+                        partial(ProjectWidget, project, self.language)
+                        for project in resume.personal_projects
+                    ],
                     id="panel-projects",
                 )
                 yield SectionPanel(
                     "3 / studies",
-                    [partial(StudyWidget, study) for study in resume_fr.studies],
+                    [
+                        partial(StudyWidget, study, self.language)
+                        for study in resume.studies
+                    ],
                     id="panel-studies",
                 )
                 yield SectionPanel(
                     "4 / misc",
-                    [partial(MiscWidget, item) for item in resume_fr.misc],
+                    [
+                        partial(MiscWidget, item, self.language)
+                        for item in resume.misc
+                    ],
                     id="panel-misc",
                 )
 
-        yield NavigationBar(HINTS["nav"], id="footer")
+        yield NavigationBar(HINTS[self.mode], id="footer")
 
     def on_mount(self) -> None:
         self._current_panel().focus()
@@ -197,26 +220,31 @@ class Resume(App[None]):
             self._move_between_entries(step)
             return
 
-        if self.nav_area == "sections":
-            self._move_between_sections(step)
+        if self.nav_area == "profile":
+            profile = self._profile()
+            if step < 0:
+                profile.scroll_up(animate=False)
+            else:
+                profile.scroll_down(animate=False)
+            return
+
+        self._move_between_sections(step)
+
+    def action_profile(self) -> None:
+        self.nav_area = "profile"
+        self.mode = "nav"
+        self._profile().focus()
+        self._sync_panel_classes()
+        self._sync_footer()
 
     def action_move_pane(self, step: int) -> None:
-        if self.mode == "inside":
-            if step < 0:
-                self.nav_area = "profile"
-                self.mode = "nav"
-                self._profile().focus()
-                self._sync_footer()
+        if step < 0:
+            self.action_profile()
             return
 
-        if step < 0 and self.nav_area != "profile":
-            self.nav_area = "profile"
-            self._profile().focus()
-            self._sync_footer()
-            return
-
-        if step > 0 and self.nav_area != "sections":
+        if step > 0 and self.nav_area == "profile":
             self.nav_area = "sections"
+            self.mode = "nav"
             self._current_panel().focus()
             self._sync_footer()
 
@@ -280,6 +308,39 @@ class Resume(App[None]):
         self._sync_panel_classes()
         self._sync_footer()
 
+    def action_toggle_language(self) -> None:
+        self.language = "en" if self.language == "fr" else "fr"
+        self.call_after_refresh(self._restore_focus_after_language_change)
+
+    def _restore_focus_after_language_change(self) -> None:
+        self._sync_panel_classes()
+
+        if self.nav_area == "profile":
+            self._profile().focus()
+            self._sync_footer()
+            return
+
+        panel = self._current_panel()
+
+        if self.mode == "inside":
+            entries = self._entries(panel)
+
+            if entries:
+                index = min(
+                    self.entry_indexes[self.section_index],
+                    len(entries) - 1,
+                )
+                self.entry_indexes[self.section_index] = index
+                entries[index].focus()
+            else:
+                panel.focus()
+
+            self._reveal_section(panel, pin=True)
+        else:
+            panel.focus()
+            self._reveal_section(panel, pin=False)
+
+        self._sync_footer()
 
 if __name__ == "__main__":
-    Resume().run()
+    ResumeApp().run()

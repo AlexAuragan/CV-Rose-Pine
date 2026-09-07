@@ -1,7 +1,7 @@
-/* Rosé Pine Moon-ish neutrals: brighter than the original Rosé Pine base. */
-$base: #232136;
-$surface: #2a273f;
-$overlay: #393552;
+/* Rosé Pine color palette */
+$base: #191724;
+$surface: #1f1d2e;
+$overlay: #26233a;
 $muted: #6e6a86;
 $subtle: #908caa;
 $text: #e0def4;
@@ -51,7 +51,16 @@ Screen {
     border-title-color: $muted;
     border-title-background: $surface;
     border-title-align: left;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
     scrollbar-visibility: hidden;
+    scrollbar-gutter: stable;
+    scrollbar-background: $surface;
+    scrollbar-color: $highlight-med;
+    scrollbar-color-hover: $foam;
+    scrollbar-color-active: $iris;
 }
 
 #sidebar:focus {
@@ -181,6 +190,19 @@ Screen {
     color: $foam;
 }
 
+
+.profile-contact-label {
+    background: transparent;
+    color: $muted;
+    text-style: bold;
+    margin-top: 1;
+}
+
+.profile-contact {
+    background: transparent;
+    color: $foam;
+}
+
 /* ---------- Resume entries: list rows, not boxed cards ---------- */
 
 .entry {
@@ -277,6 +299,11 @@ Screen {
     color: $subtle;
 }
 
+
+.company-link {
+    margin-right: 2;
+}
+
 /* ---------- Links ---------- */
 
 Link {
@@ -352,26 +379,6 @@ Link:focus {
     margin-top: 1;
 }
 
-.tag-label {
-    width: auto;
-    background: transparent;
-    color: $subtle;
-    text-style: italic;
-    margin-right: 1;
-}
-
-.tag {
-    width: auto;
-    color: $rose;
-    background: $overlay;
-    padding: 0 1;
-    margin-right: 1;
-}
-
-.tag-link {
-    color: $foam;
-    text-style: underline;
-}
 
 /* ---------- Responsive ---------- */
 
