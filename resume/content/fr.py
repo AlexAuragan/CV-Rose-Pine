@@ -22,7 +22,7 @@ namr_fr = Post(
         "Scraping de données géographiques",
         "Déploiement d'entraînement de modèles sur GCP"
     ],
-    skills=["Déploiement", "Entraînement ML/DL", "Scrapping", "Géodata"],
+    skills=["Déploiement", "Entraînement ML/DL", "Scrapping", "Géodata", "CI/CD"],
     tools=["GCP", "DBeaver", "QGIS"],
     region="Paris, France"
 )
