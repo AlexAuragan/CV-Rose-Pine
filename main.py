@@ -104,7 +104,7 @@ class ResumeApp(App[None]):
     ]
 
     mode = reactive("nav")
-    language: reactive[Language] = reactive("fr", recompose=True)
+    language: reactive[Language] = reactive("fr")
 
     CSS = CSS
 
@@ -123,6 +123,7 @@ class ResumeApp(App[None]):
         self._profile_widget: ProfileWidget
         self._panel_widgets: list[SectionPanel]
         self._content_widget: VerticalScroll
+
 
     @property
     def profile(self) -> ProfileWidget:
@@ -183,12 +184,7 @@ class ResumeApp(App[None]):
         )
 
     def on_mount(self) -> None:
-        self._profile_widget = self.query_one("#sidebar", ProfileWidget)
-        self._panel_widgets = [
-            self.query_one(f"#{section_id}", SectionPanel)
-            for section_id in SECTION_IDS
-        ]
-        self._content_widget = self.query_one("#content", VerticalScroll)
+        self._cache_widgets()
 
         self.profile.focus()
         self._sync_panel_classes()
@@ -364,12 +360,24 @@ class ResumeApp(App[None]):
         self._sync_panel_classes()
         self._sync_footer()
 
-    def action_toggle_language(self) -> None:
+    def _cache_widgets(self) -> None:
+        self._profile_widget = self.query_one("#sidebar", ProfileWidget)
+        self._panel_widgets = [
+            self.query_one(f"#{section_id}", SectionPanel)
+            for section_id in SECTION_IDS
+        ]
+        self._content_widget = self.query_one("#content", VerticalScroll)
+
+    async def action_toggle_language(self) -> None:
         self.search_query = ""
         self.search_matches.clear()
         self.search_match_index = 0
+
         self.language = "en" if self.language == "fr" else "fr"
-        self.call_after_refresh(self._restore_focus_after_language_change)
+
+        await self.recompose()
+        self._cache_widgets()
+        self._restore_focus_after_language_change()
 
     def _restore_focus_after_language_change(self) -> None:
         self._sync_panel_classes()
