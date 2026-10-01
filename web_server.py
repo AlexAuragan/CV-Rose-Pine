@@ -62,9 +62,7 @@ def build_templates(destination: Path) -> Path:
 
     closing_body = "</body>"
     if closing_body not in source:
-        raise RuntimeError(
-            "textual-serve's app_index.html no longer contains </body>"
-        )
+        raise RuntimeError("textual-serve's app_index.html no longer contains </body>")
 
     destination.mkdir(parents=True, exist_ok=True)
 

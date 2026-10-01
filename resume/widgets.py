@@ -37,7 +37,8 @@ class ClientLink(Link):
             Text(
                 text,
                 style=Style(link=self.url or None),
-            )
+            ),
+            layout=False,
         )
 
     def watch_url(self, url: str) -> None:
@@ -45,7 +46,8 @@ class ClientLink(Link):
             Text(
                 self.text,
                 style=Style(link=url or None),
-            )
+            ),
+            layout=False,
         )
 
     def action_open_link(self) -> None:
@@ -208,6 +210,7 @@ class TagRow(Static):
 
     def render(self) -> Text:
         return self._content
+
 
 class LinksRow(Horizontal):
     def __init__(
@@ -581,9 +584,7 @@ class NavigationBar(Horizontal):
 
     def update_controls(self, controls: list[str]) -> None:
         self.controls = controls
-        self.query_one("#footer-hints", Static).update(
-            "  ".join(controls)
-        )
+        self.query_one("#footer-hints", Static).update("  ".join(controls))
 
     def set_location(self, text: str) -> None:
         self.location_text = text

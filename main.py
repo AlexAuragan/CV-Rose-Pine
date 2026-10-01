@@ -224,7 +224,7 @@ class ResumeApp(App[None]):
             footer.update(
                 "[bold #eb6f92]>[/] [bold #e0def4]profile[/] "
                 "[#908caa]:: → back to sections[/]",
-                layout=False
+                layout=False,
             )
             return
 
@@ -233,7 +233,7 @@ class ResumeApp(App[None]):
             footer.update(
                 f"[bold #eb6f92]>[/] [bold #e0def4]{panel.panel_title}[/] "
                 "[#908caa]:: ← profile :: enter to browse[/]",
-                layout=False
+                layout=False,
             )
             return
 
@@ -243,7 +243,7 @@ class ResumeApp(App[None]):
         footer.update(
             f"[bold #9ccfd8]>[/] [bold #c4a7e7]{panel.panel_title}[/] "
             f"[#908caa]:: item {selected}/{total} :: esc to sections[/]",
-            layout=False
+            layout=False,
         )
 
     def action_move_vertical(self, step: int) -> None:
@@ -448,7 +448,7 @@ class ResumeApp(App[None]):
             f"[#908caa]:: "
             f"{self.search_match_index + 1}/{len(self.search_matches)} "
             f":: n/N next/prev[/]",
-            layout=False
+            layout=False,
         )
 
     def _focus_search_match(self) -> None:
@@ -533,7 +533,9 @@ class ResumeApp(App[None]):
             self._sync_footer()
 
             footer = self.query_one("#footer-location", Static)
-            footer.update(f"[bold #eb6f92]/ {query}[/] [#908caa]:: no matches[/]", layout=False)
+            footer.update(
+                f"[bold #eb6f92]/ {query}[/] [#908caa]:: no matches[/]", layout=False
+            )
             return
 
         self._focus_search_match()
