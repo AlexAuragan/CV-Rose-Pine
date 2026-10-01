@@ -141,6 +141,8 @@ class DescriptionWidget(Vertical):
         pending = flush_lines()
         if pending is not None:
             yield pending
+
+
 class TagRow(Static):
     def __init__(
         self,
@@ -155,19 +157,9 @@ class TagRow(Static):
         self.language: Language = language
         self.add_class("tag-row")
 
-    def search_text(self) -> str:
-        parts = [self.label]
+        self._content = self._build_content()
 
-        for value in self.values:
-            if isinstance(value, HyperLink):
-                parts.append(value.title(self.language))
-                parts.append(value.url)
-            else:
-                parts.append(value)
-
-        return " ".join(parts)
-
-    def render(self) -> Text:
+    def _build_content(self) -> Text:
         line = Text()
 
         line.append(
@@ -198,11 +190,24 @@ class TagRow(Static):
                     ),
                 )
 
-            # Important: wrapping happens at this space.
             line.append(" ")
 
         return line
 
+    def search_text(self) -> str:
+        parts = [self.label]
+
+        for value in self.values:
+            if isinstance(value, HyperLink):
+                parts.append(value.title(self.language))
+                parts.append(value.url)
+            else:
+                parts.append(value)
+
+        return " ".join(parts)
+
+    def render(self) -> Text:
+        return self._content
 
 class LinksRow(Horizontal):
     def __init__(
