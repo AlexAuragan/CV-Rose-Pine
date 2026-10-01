@@ -58,8 +58,9 @@ class ClientLink(Link):
             return
 
         # A directly launched local TUI can open the local browser.
-        if "SSH_CONNECTION" not in os.environ:
+        if "CV_SSH_SESSION" not in os.environ:
             self.app.open_url(self.url)
+
 
 class DescriptionWidget(Vertical):
     def __init__(
@@ -110,6 +111,7 @@ class DescriptionWidget(Vertical):
     def compose(self) -> ComposeResult:
         yield from self._widgets_for(self.value)
 
+
 class TagRow(Static):
     def __init__(
         self,
@@ -137,40 +139,41 @@ class TagRow(Static):
         return " ".join(parts)
 
     def render(self) -> Text:
-            line = Text()
+        line = Text()
 
-            line.append(
-                f"{self.label}: ",
-                style=Style(
-                    color="#908caa",
-                    italic=True,
-                ),
-            )
+        line.append(
+            f"{self.label}: ",
+            style=Style(
+                color="#908caa",
+                italic=True,
+            ),
+        )
 
-            for value in self.values:
-                if isinstance(value, HyperLink):
-                    line.append(
-                        f" {value.title(self.language)} ",
-                        style=Style(
-                            color="#9ccfd8",
-                            bgcolor="#393552",
-                            underline=True,
-                            link=value.url,
-                        ),
-                    )
-                else:
-                    line.append(
-                        f" {value} ",
-                        style=Style(
-                            color="#ea9a97",
-                            bgcolor="#393552",
-                        ),
-                    )
+        for value in self.values:
+            if isinstance(value, HyperLink):
+                line.append(
+                    f" {value.title(self.language)} ",
+                    style=Style(
+                        color="#9ccfd8",
+                        bgcolor="#393552",
+                        underline=True,
+                        link=value.url,
+                    ),
+                )
+            else:
+                line.append(
+                    f" {value} ",
+                    style=Style(
+                        color="#ea9a97",
+                        bgcolor="#393552",
+                    ),
+                )
 
-                # Important: wrapping happens at this space.
-                line.append(" ")
+            # Important: wrapping happens at this space.
+            line.append(" ")
 
-            return line
+        return line
+
 
 class LinksRow(Horizontal):
     def __init__(
@@ -495,6 +498,7 @@ class ProfileWidget(VerticalScroll):
         super().watch_scroll_y(old_value, new_value)
         self._update_scroll_markers()
 
+
 class SectionPanel(VerticalGroup):
     """An expanded resume section; the right-hand column owns scrolling."""
 
@@ -541,10 +545,7 @@ class NavigationBar(Horizontal):
         self.controls = controls
         hints = self.query_one("#footer-hints")
         hints.remove_children()
-        hints.mount_all(
-            Static(binding, classes="contact-item")
-            for binding in controls
-        )
+        hints.mount_all(Static(binding, classes="contact-item") for binding in controls)
 
     def set_location(self, text: str) -> None:
         self.location_text = text

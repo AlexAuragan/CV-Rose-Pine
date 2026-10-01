@@ -37,8 +37,7 @@ class ResumeSSHServer(asyncssh.SSHServer):
     def begin_auth(self, username: str) -> bool:
         elapsed = time.perf_counter() - self.connected_at
         print(
-            f"begin_auth after {elapsed:.3f}s "
-            f"for username={username!r}",
+            f"begin_auth after {elapsed:.3f}s for username={username!r}",
             flush=True,
         )
         return False
@@ -98,6 +97,7 @@ async def handle_client(
 
     env = os.environ.copy()
     env["TERM"] = process.term_type
+    env["CV_SSH_SESSION"] = "1"
     env.setdefault("COLORTERM", "truecolor")
 
     child: asyncio.subprocess.Process | None = None
@@ -125,6 +125,7 @@ async def handle_client(
             f"Started main.py as PID {child.pid}",
             flush=True,
         )
+
         async def forward_input() -> None:
             while True:
                 try:
@@ -159,6 +160,7 @@ async def handle_client(
                     master_fd,
                     data,
                 )
+
         input_task = asyncio.create_task(forward_input())
         chunk_index = 0
 
@@ -223,7 +225,6 @@ async def handle_client(
             await child.wait()
 
 
-
 async def main() -> None:
     ensure_host_key()
 
@@ -238,7 +239,6 @@ async def main() -> None:
         allow_pty=True,
         x11_forwarding=False,
         agent_forwarding=False,
-
         gss_host=None,
         gss_kex=False,
         gss_auth=False,

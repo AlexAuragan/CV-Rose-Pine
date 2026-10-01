@@ -1,21 +1,12 @@
-
 from dataclasses import dataclass, field
 from typing import Literal
 
 type Language = Literal["en", "fr"]
 
 
-type Serializable = (
-    str
-    | HyperLink
-    | list[Serializable]
-    | tuple[str, Serializable]
-)
+type Serializable = str | HyperLink | list[Serializable] | tuple[str, Serializable]
 
 type Tool = str | HyperLink
-
-
-
 
 
 @dataclass(frozen=True)
@@ -79,6 +70,7 @@ class ContactInfo:
     value: str
     url: str | None = None
 
+
 @dataclass(frozen=True)
 class Profile:
     name: str
@@ -96,8 +88,6 @@ class MiscItem:
     desc: Serializable
     tags: list[str] = field(default_factory=list)
     links: list[HyperLink] = field(default_factory=list)
-
-
 
 
 @dataclass(frozen=True)

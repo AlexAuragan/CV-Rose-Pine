@@ -58,13 +58,11 @@ HINTS = {
     ],
 }
 
+
 def normalize_search(text: str) -> str:
     decomposed = normalize("NFKD", text.casefold())
-    return "".join(
-        character
-        for character in decomposed
-        if not combining(character)
-    )
+    return "".join(character for character in decomposed if not combining(character))
+
 
 class ResumeApp(App[None]):
     HORIZONTAL_BREAKPOINTS = [
@@ -76,30 +74,23 @@ class ResumeApp(App[None]):
     BINDINGS = [
         Binding("up", "move_vertical(-1)", show=False, priority=True),
         Binding("k", "move_vertical(-1)", show=False),
-
         Binding("down", "move_vertical(1)", show=False, priority=True),
         Binding("j", "move_vertical(1)", show=False),
-
         Binding("left", "move_pane(-1)", show=False, priority=True),
         Binding("h", "move_pane(-1)", show=False),
-
         Binding("right", "move_pane(1)", show=False, priority=True),
         Binding("l", "move_pane(1)", show=False),
-
         Binding("r,R", "toggle_language", show=False),
         Binding("enter", "enter_section", show=False),
         Binding("escape", "leave_section", show=False),
-
         Binding("slash,f", "open_search", show=False),
         Binding("n", "next_search(1)", show=False),
         Binding("N", "next_search(-1)", show=False),
-
         Binding("0", "profile", show=False),
         Binding("1", "jump(0)", show=False),
         Binding("2", "jump(1)", show=False),
         Binding("3", "jump(2)", show=False),
         Binding("4", "jump(3)", show=False),
-
         Binding("q", "quit", show=False),
     ]
 
@@ -123,7 +114,6 @@ class ResumeApp(App[None]):
         self._profile_widget: ProfileWidget
         self._panel_widgets: list[SectionPanel]
         self._content_widget: VerticalScroll
-
 
     @property
     def profile(self) -> ProfileWidget:
@@ -170,10 +160,7 @@ class ResumeApp(App[None]):
                 )
                 yield SectionPanel(
                     "4 / misc",
-                    [
-                        partial(MiscWidget, item, self.language)
-                        for item in resume.misc
-                    ],
+                    [partial(MiscWidget, item, self.language) for item in resume.misc],
                     id="panel-misc",
                 )
 
@@ -200,11 +187,8 @@ class ResumeApp(App[None]):
         self._sync_panel_classes()
         self._sync_footer()
 
-
-
     def _current_panel(self) -> SectionPanel:
         return self.panels[self.section_index % len(self.panels)]
-
 
     def _reveal_section(self, panel: SectionPanel, *, pin: bool) -> None:
         self.content.scroll_to_widget(
@@ -303,6 +287,7 @@ class ResumeApp(App[None]):
 
         self._reveal_section(panel, pin=True)
         self._sync_footer()
+
     def _move_between_entries(self, step: int) -> None:
         panel = self._current_panel()
         entries = self._entries(panel)
@@ -363,8 +348,7 @@ class ResumeApp(App[None]):
     def _cache_widgets(self) -> None:
         self._profile_widget = self.query_one("#sidebar", ProfileWidget)
         self._panel_widgets = [
-            self.query_one(f"#{section_id}", SectionPanel)
-            for section_id in SECTION_IDS
+            self.query_one(f"#{section_id}", SectionPanel) for section_id in SECTION_IDS
         ]
         self._content_widget = self.query_one("#content", VerticalScroll)
 
@@ -414,7 +398,6 @@ class ResumeApp(App[None]):
             return widget.search_text()
 
         return str(widget.content)
-
 
     def _find_search_matches(self, query: str) -> list[Static]:
         needle = normalize_search(query)
@@ -544,10 +527,7 @@ class ResumeApp(App[None]):
             self._sync_footer()
 
             footer = self.query_one("#footer-location", Static)
-            footer.update(
-                f"[bold #eb6f92]/ {query}[/] "
-                "[#908caa]:: no matches[/]"
-            )
+            footer.update(f"[bold #eb6f92]/ {query}[/] [#908caa]:: no matches[/]")
             return
 
         self._focus_search_match()
@@ -587,11 +567,12 @@ class ResumeApp(App[None]):
         if not self.search_matches:
             return
 
-        self.search_match_index = (
-            self.search_match_index + step
-        ) % len(self.search_matches)
+        self.search_match_index = (self.search_match_index + step) % len(
+            self.search_matches
+        )
 
         self._focus_search_match()
+
 
 if __name__ == "__main__":
     ResumeApp().run()

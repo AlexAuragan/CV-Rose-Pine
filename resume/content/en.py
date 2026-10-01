@@ -20,11 +20,11 @@ namr_en = Post(
         "Worked on a wide variety of tasks until the company's liquidation, without a single major project",
         "Rewrote internal libraries to reduce technical debt",
         "Scraped geographic data",
-        "Deployed model training workflows on GCP"
+        "Deployed model training workflows on GCP",
     ],
     skills=["Deployment", "ML/DL Training", "Web Scraping", "Geospatial Data", "CI/CD"],
     tools=["GCP", "DBeaver", "QGIS"],
-    region="Paris, France"
+    region="Paris, France",
 )
 
 trickstr_en = Post(
@@ -34,32 +34,41 @@ trickstr_en = Post(
     start_month="January 2026",
     end_month="March 2026",
     desc=[
-        ("Internal reporting automation", [
-            "Gathered requirements with Vectors consultants",
-            "Developed a Streamlit application",
-            "Securely deployed the application internally"
-        ]),
-        ("Study of political biases in AI models", [
-            "Designed a scientific methodology to assess LLM 'opinions' as neutrally as possible",
-            "Created metrics and indices to compare AI 'opinions' with those of the French population",
-            "Conducted large-scale surveys across numerous language models using different settings (personas, geolocation, language, ...)",
-            links.ai_bias_article
-        ]),
-        ("'AI Reputation' study", [
-            "Extended the previous study to brands, products, public figures, and other entities",
-            "Created detailed reports, benchmarks, and visualizations",
-            links.benchmark_airep_cac40,
-        ]),
+        (
+            "Internal reporting automation",
+            [
+                "Gathered requirements with Vectors consultants",
+                "Developed a Streamlit application",
+                "Securely deployed the application internally",
+            ],
+        ),
+        (
+            "Study of political biases in AI models",
+            [
+                "Designed a scientific methodology to assess LLM 'opinions' as neutrally as possible",
+                "Created metrics and indices to compare AI 'opinions' with those of the French population",
+                "Conducted large-scale surveys across numerous language models using different settings (personas, geolocation, language, ...)",
+                links.ai_bias_article,
+            ],
+        ),
+        (
+            "'AI Reputation' study",
+            [
+                "Extended the previous study to brands, products, public figures, and other entities",
+                "Created detailed reports, benchmarks, and visualizations",
+                links.benchmark_airep_cac40,
+            ],
+        ),
     ],
     skills=[
         "Data Science",
         "API Integration",
         "R&D",
         "GEO (Generative Engine Optimization)",
-        "Prompt Engineering"
+        "Prompt Engineering",
     ],
     tools=["Google Cloud Platform", "Docker", "Streamlit"],
-    region="Paris, France"
+    region="Paris, France",
 )
 
 vectors_en = Post(
@@ -72,13 +81,16 @@ vectors_en = Post(
         "Optimized internal processes using AI",
         "Performed large-scale web scraping for various projects (e.g. postal codes for CAC 40 company websites)",
         "Conducted data analyses on clients' social media performance",
-        ("Developed a platform to detect social media posts related to the Paris 2024 Olympic Games", [
-            "The goal was to detect posts from Carrefour's competitors",
-            "Built a dataset containing the physical addresses of Carrefour stores and their competitors",
-            "Linked physical addresses to Facebook, Instagram, X, and TikTok pages",
-            "Trained AI models to detect Olympic merchandise in images",
-            "Deployed a Streamlit platform to browse suspicious posts"
-        ])
+        (
+            "Developed a platform to detect social media posts related to the Paris 2024 Olympic Games",
+            [
+                "The goal was to detect posts from Carrefour's competitors",
+                "Built a dataset containing the physical addresses of Carrefour stores and their competitors",
+                "Linked physical addresses to Facebook, Instagram, X, and TikTok pages",
+                "Trained AI models to detect Olympic merchandise in images",
+                "Deployed a Streamlit platform to browse suspicious posts",
+            ],
+        ),
     ],
     tools=["Neo4j", "Elasticsearch", "Streamlit", "Midjourney", "ElevenLabs"],
     skills=[
@@ -89,9 +101,9 @@ vectors_en = Post(
         "State-of-the-Art Research",
         "Web Scraping",
         "Data Visualization",
-        "Prompt Engineering"
+        "Prompt Engineering",
     ],
-    region="Paris, France"
+    region="Paris, France",
 )
 
 kitware_en = Post(
@@ -101,22 +113,33 @@ kitware_en = Post(
     start_month="July 2022",
     end_month="December 2022",
     desc=[
-        ("X-ray image segmentation", [
-            "Used the Mask R-CNN model",
-            "Modified internal model metrics to account for X-ray image-specific constraints such as overlapping objects",
-            "Benchmarked models and developed a training loop for sensitive data",
-        ]),
-        ("DICOM file classification", [
-            "Worked with large medical DICOM files structured as key-value pairs",
-            "Tokenized textual fields",
-            "Used Random Forest models to identify relevant fields",
-            "Developed a small model for 3D image classification"
-        ]),
+        (
+            "X-ray image segmentation",
+            [
+                "Used the Mask R-CNN model",
+                "Modified internal model metrics to account for X-ray image-specific constraints such as overlapping objects",
+                "Benchmarked models and developed a training loop for sensitive data",
+            ],
+        ),
+        (
+            "DICOM file classification",
+            [
+                "Worked with large medical DICOM files structured as key-value pairs",
+                "Tokenized textual fields",
+                "Used Random Forest models to identify relevant fields",
+                "Developed a small model for 3D image classification",
+            ],
+        ),
         "Implemented a GPU-compatible 3D filter in PyTorch",
     ],
     tools=["PyTorch", "Mask R-CNN", "Random Forest"],
-    skills=["Classification", "Model Modification", "Vector Computation", "Computer Vision"],
-    region="Lyon, France"
+    skills=[
+        "Classification",
+        "Model Modification",
+        "Vector Computation",
+        "Computer Vision",
+    ],
+    region="Lyon, France",
 )
 
 ## Studies
@@ -132,8 +155,8 @@ master_sherbrooke_en = Study(
         "Project Management",
         "Creativity",
         "Communication",
-        "Negotiation"
-    ]
+        "Negotiation",
+    ],
 )
 
 enseeiht_en = Study(
@@ -148,8 +171,8 @@ enseeiht_en = Study(
         "Object-Oriented Programming",
         "Concurrent Programming",
         "Graph Theory",
-        "Scrum"
-    ]
+        "Scrum",
+    ],
 )
 
 ## Projects
@@ -157,7 +180,7 @@ homelab_en = PersonalProject(
     title="Proxmox Homelab",
     desc=[
         "Deployed and maintained a fleet of around thirty Linux virtual machines",
-        "Developed and deployed custom tools"
+        "Developed and deployed custom tools",
     ],
     modality="Solo",
     year="2024 - Present",
@@ -173,7 +196,7 @@ homelab_en = PersonalProject(
         "Grafana",
         "UptimeKuma",
         links.pipechecker,
-        links.filekeeper
+        links.filekeeper,
     ],
     skills=[
         "DNS",
@@ -182,8 +205,8 @@ homelab_en = PersonalProject(
         "Deployment",
         "Notifications",
         "Maintenance",
-        "Networking"
-    ]
+        "Networking",
+    ],
 )
 
 frataga_en = PersonalProject(
@@ -191,13 +214,13 @@ frataga_en = PersonalProject(
     desc=[
         "Created archetype collections, including a DnD collection and a Greek deity collection",
         "Vectorized archetypes and user queries, then performed vector search",
-        "Deployed a Streamlit interface"
+        "Deployed a Streamlit interface",
     ],
     modality="Duo",
     year=2025,
     links=[links.frataga],
     skills=["Vector Search", "Self-Hosting", "Vector Databases"],
-    tools=["Midjourney", "Streamlit", "CamemBERT"]
+    tools=["Midjourney", "Streamlit", "CamemBERT"],
 )
 
 deepfakes_en = PersonalProject(
@@ -215,16 +238,15 @@ deepfakes_en = PersonalProject(
 prez_7fault_en = PersonalProject(
     "President of 7Fault, ENSEEIHT Game Development Club",
     desc=[
-        ("Games I worked on during game jams:", [
-            links.jump_slime_jump,
-            links.loading,
-            links.bricobot
-        ])
+        (
+            "Games I worked on during game jams:",
+            [links.jump_slime_jump, links.loading, links.bricobot],
+        )
     ],
     modality="Team of 3 to 5",
     year="2020 - 2021",
     skills=["Game Development", "Design Patterns", "Pixel Art", "Music"],
-    tools=["Unity", "Bosca Ceoil", "FLStudio"]
+    tools=["Unity", "Bosca Ceoil", "FLStudio"],
 )
 
 league_ai_en = PersonalProject(
@@ -233,13 +255,14 @@ league_ai_en = PersonalProject(
     modality="Duo",
     desc=[
         "The goal was to optimize champion selection in League of Legends",
-        "Tested various methods to vectorize champions in order to compare them"
+        "Tested various methods to vectorize champions in order to compare them",
     ],
     skills=["Vectorization", "Statistical Analysis", "Game Theory"],
-    tools=["VAE (Variational Auto-Encoder)"]
+    tools=["VAE (Variational Auto-Encoder)"],
 )
 hypnose_en = MiscItem(
-    "Street Hypnosis", "I'm a street hypnotist since about 12 years now, I post the videos people send me on Instagram !",
+    "Street Hypnosis",
+    "I'm a street hypnotist since about 12 years now, I post the videos people send me on Instagram !",
     links=[links.hypnose_insta, links.blog_hypnose],
 )
 
@@ -268,15 +291,17 @@ resume_en = Resume(
         highlights=[
             "Highly proficient in Python",
             "Street hypnotist",
-            "Passionate about computer science"
+            "Passionate about computer science",
         ],
         current="Looking for an R&D position in AI",
         contact=[
             ContactInfo("@ Email", "alex@auragan.fr", url="mailto:alex@auragan.fr"),
             ContactInfo("✆ Tel", "06 33 02 82 75", url="tel:+33633038357"),
-            ContactInfo("⛴ Github", "AlexAuragan", url="https://github.com/AlexAuragan"),
-            ContactInfo("♠ Website", "auragan.fr", url="https://auragan.fr")
-        ]
+            ContactInfo(
+                "⛴ Github", "AlexAuragan", url="https://github.com/AlexAuragan"
+            ),
+            ContactInfo("♠ Website", "auragan.fr", url="https://auragan.fr"),
+        ],
     ),
     work_experience=[
         namr_en,
