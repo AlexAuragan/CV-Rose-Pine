@@ -11,3 +11,5 @@ wheels/
 
 .ssh
 .ruff_cache
+
+*.log

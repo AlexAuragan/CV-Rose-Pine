@@ -14,7 +14,7 @@ from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, VerticalScroll
 from textual.css.query import NoMatches
-from textual.reactive import reactive
+from textual.reactive import reactive, var
 
 # from textual.widget import Widget
 from textual.widgets import Input, Static
@@ -94,7 +94,7 @@ class ResumeApp(App[None]):
         Binding("q", "quit", show=False),
     ]
 
-    mode = reactive("nav", init=False)
+    mode = var("nav", init=False)
     language: reactive[Language] = reactive("fr")
 
     CSS = CSS

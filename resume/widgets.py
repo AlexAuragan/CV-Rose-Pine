@@ -74,44 +74,73 @@ class DescriptionWidget(Vertical):
         self.language: Language = language
         self.add_class("description")
 
-    def _widgets_for(self, value: Serializable) -> Iterable[Widget]:
+    def _flatten(
+        self,
+        value: Serializable,
+        depth: int = 0,
+    ) -> Iterable[tuple[str, int, str | HyperLink]]:
         if isinstance(value, str):
-            yield Static(
-                f"· {value}",
-                classes="description-line",
-            )
+            yield ("line", depth, value)
             return
 
         if isinstance(value, HyperLink):
-            yield ClientLink(
-                f"-> {value.title(self.language)}",
-                url=value.url,
-                classes="description-link",
-            )
+            yield ("link", depth, value)
             return
 
         if isinstance(value, list):
             for item in value:
-                yield from self._widgets_for(item)
+                yield from self._flatten(item, depth)
             return
 
         title, child = value
 
-        yield Static(
-            f":: {title}",
-            classes="description-group-title",
-        )
-
-        yield DescriptionWidget(
-            child,
-            self.language,
-            classes="description-children",
-        )
+        yield ("title", depth, title)
+        yield from self._flatten(child, depth + 1)
 
     def compose(self) -> ComposeResult:
-        yield from self._widgets_for(self.value)
+        pending_lines: list[str] = []
 
+        def flush_lines() -> Static | None:
+            if not pending_lines:
+                return None
 
+            widget = Static(
+                "\n".join(pending_lines),
+                classes="description-line",
+            )
+            pending_lines.clear()
+            return widget
+
+        for kind, depth, value in self._flatten(self.value):
+            indent = "  " * depth
+
+            if kind == "line":
+                assert isinstance(value, str)
+                pending_lines.append(f"{indent}· {value}")
+                continue
+
+            pending = flush_lines()
+            if pending is not None:
+                yield pending
+
+            if kind == "title":
+                assert isinstance(value, str)
+                yield Static(
+                    f"{indent}:: {value}",
+                    classes="description-group-title",
+                )
+                continue
+
+            assert isinstance(value, HyperLink)
+            yield ClientLink(
+                f"{indent}-> {value.title(self.language)}",
+                url=value.url,
+                classes="description-link",
+            )
+
+        pending = flush_lines()
+        if pending is not None:
+            yield pending
 class TagRow(Static):
     def __init__(
         self,
@@ -536,20 +565,28 @@ class NavigationBar(Horizontal):
         self.location_text = ""
 
     def compose(self) -> ComposeResult:
-        yield Static(self.location_text, id="footer-location")
-        with Horizontal(id="footer-hints"):
-            for binding in self.controls:
-                yield Static(binding, classes="contact-item")
+        yield Static(
+            self.location_text,
+            id="footer-location",
+        )
+        yield Static(
+            "  ".join(self.controls),
+            id="footer-hints",
+        )
 
     def update_controls(self, controls: list[str]) -> None:
         self.controls = controls
-        hints = self.query_one("#footer-hints")
-        hints.remove_children()
-        hints.mount_all(Static(binding, classes="contact-item") for binding in controls)
+        self.query_one("#footer-hints", Static).update(
+            "  ".join(controls)
+        )
 
     def set_location(self, text: str) -> None:
         self.location_text = text
+
         try:
-            self.query_one("#footer-location", Static).update(text)
+            self.query_one("#footer-location", Static).update(
+                text,
+                layout=False,
+            )
         except NoMatches:
             pass

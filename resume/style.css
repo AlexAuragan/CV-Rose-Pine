@@ -125,16 +125,11 @@ Screen {
 #footer-hints {
     width: auto;
     height: 1;
-    background: $surface;
-}
-
-.contact-item {
-    width: auto;
-    height: 1;
     margin-left: 2;
     background: $surface;
     color: $muted;
 }
+
 
 /* ---------- Profile ---------- */
 
@@ -373,13 +368,6 @@ Link:focus {
     text-style: bold;
 }
 
-.description-children {
-    width: 100%;
-    background: transparent;
-    margin-left: 2;
-    padding-left: 1;
-    border-left: solid $highlight-med;
-}
 
 /* ---------- Tags ---------- */
 
