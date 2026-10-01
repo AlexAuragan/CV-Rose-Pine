@@ -223,7 +223,8 @@ class ResumeApp(App[None]):
         if self.mode == "nav" and self.nav_area == "profile":
             footer.update(
                 "[bold #eb6f92]>[/] [bold #e0def4]profile[/] "
-                "[#908caa]:: → back to sections[/]"
+                "[#908caa]:: → back to sections[/]",
+                layout=False
             )
             return
 
@@ -231,7 +232,8 @@ class ResumeApp(App[None]):
         if self.mode == "nav":
             footer.update(
                 f"[bold #eb6f92]>[/] [bold #e0def4]{panel.panel_title}[/] "
-                "[#908caa]:: ← profile :: enter to browse[/]"
+                "[#908caa]:: ← profile :: enter to browse[/]",
+                layout=False
             )
             return
 
@@ -240,7 +242,8 @@ class ResumeApp(App[None]):
         total = len(entries)
         footer.update(
             f"[bold #9ccfd8]>[/] [bold #c4a7e7]{panel.panel_title}[/] "
-            f"[#908caa]:: item {selected}/{total} :: esc to sections[/]"
+            f"[#908caa]:: item {selected}/{total} :: esc to sections[/]",
+            layout=False
         )
 
     def action_move_vertical(self, step: int) -> None:
@@ -297,8 +300,10 @@ class ResumeApp(App[None]):
         current_index = self.entry_indexes[self.section_index] % len(entries)
         next_index = (current_index + step) % len(entries)
         self.entry_indexes[self.section_index] = next_index
-        entries[next_index].focus()
-        self._sync_footer()
+
+        entry = entries[next_index]
+        entry.focus(scroll_visible=False)
+        self.content.scroll_to_widget(entry, animate=False)
 
     def action_enter_section(self) -> None:
         if self.mode != "nav" or self.nav_area != "sections":
@@ -442,7 +447,8 @@ class ResumeApp(App[None]):
             f"[bold #f6c177]/ {self.search_query}[/] "
             f"[#908caa]:: "
             f"{self.search_match_index + 1}/{len(self.search_matches)} "
-            f":: n/N next/prev[/]"
+            f":: n/N next/prev[/]",
+            layout=False
         )
 
     def _focus_search_match(self) -> None:
@@ -527,7 +533,7 @@ class ResumeApp(App[None]):
             self._sync_footer()
 
             footer = self.query_one("#footer-location", Static)
-            footer.update(f"[bold #eb6f92]/ {query}[/] [#908caa]:: no matches[/]")
+            footer.update(f"[bold #eb6f92]/ {query}[/] [#908caa]:: no matches[/]", layout=False)
             return
 
         self._focus_search_match()

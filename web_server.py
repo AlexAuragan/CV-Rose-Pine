@@ -3,7 +3,6 @@ import shlex
 import sys
 from importlib.resources import files
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
 from textual_serve.server import Server
 
@@ -63,7 +62,9 @@ def build_templates(destination: Path) -> Path:
 
     closing_body = "</body>"
     if closing_body not in source:
-        raise RuntimeError("textual-serve's app_index.html no longer contains </body>")
+        raise RuntimeError(
+            "textual-serve's app_index.html no longer contains </body>"
+        )
 
     destination.mkdir(parents=True, exist_ok=True)
 
@@ -96,19 +97,19 @@ def main() -> None:
     port = int(os.environ.get("PORT", "8001"))
     public_url = os.environ.get("PUBLIC_URL") or None
 
-    with TemporaryDirectory(prefix="cv-rose-pine-web-") as temp_dir:
-        templates_path = build_templates(Path(temp_dir))
+    runtime_dir = Path("/run/cv-rose-pine-web")
+    templates_path = build_templates(runtime_dir / "templates")
 
-        server = Server(
-            command=command,
-            host=host,
-            port=port,
-            title="CV — Rose Pine",
-            public_url=public_url,
-            templates_path=templates_path,
-        )
+    server = Server(
+        command=command,
+        host=host,
+        port=port,
+        title="CV — Rose Pine",
+        public_url=public_url,
+        templates_path=templates_path,
+    )
 
-        server.serve()
+    server.serve()
 
 
 if __name__ == "__main__":
