@@ -94,7 +94,7 @@ class ResumeApp(App[None]):
         Binding("q", "quit", show=False),
     ]
 
-    mode = reactive("nav")
+    mode = reactive("nav", init=False)
     language: reactive[Language] = reactive("fr")
 
     CSS = CSS
