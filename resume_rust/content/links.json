@@ -1,0 +1,72 @@
+{
+  "ai_bias_article": {
+    "title_en": "Article about AI political biasses on BFMTV",
+    "title_fr": "Article sur les biais politiques des IA parut sur BFMTV",
+    "url": "https://www.bfmtv.com/tech/intelligence-artificielle/pour-qui-votent-les-ia-pour-la-gauche-meme-celle-d-elon-musk_AV-202503200283.html"
+  },
+  "benchmark_airep_cac40": {
+    "title_en": "AI Reputation CAC40 Benchmark",
+    "title_fr": "Benchmark IA Réputation du CAC40",
+    "url": "https://auragan.fr/files/Barometre_IA_Rep_CAC_40.pdf"
+  },
+  "blog_hypnose": {
+    "title_en": "Blog Hypnose",
+    "title_fr": "Blog",
+    "url": "https://hypnose.auragan.fr"
+  },
+  "bricobot": {
+    "title_en": "Bricobot",
+    "title_fr": "Bricobot",
+    "url": "https://7fault.itch.io/bricobot"
+  },
+  "filekeeper": {
+    "title_en": "File-Keeper",
+    "title_fr": "File-Keeper",
+    "url": "https://github.com/AlexAuragan/file-keeper"
+  },
+  "frataga": {
+    "title_en": "Frataga",
+    "title_fr": "Frataga",
+    "url": "https://frataga.auragan.fr/"
+  },
+  "hypnose_insta": {
+    "title_en": "Compte Instagram",
+    "title_fr": "Instagram",
+    "url": "https://instagram.com/alexhypno6"
+  },
+  "jump_slime_jump": {
+    "title_en": "Jump Slime Jump",
+    "title_fr": "Jump Slime Jump",
+    "url": "https://7fault.itch.io/jump-slime-jump"
+  },
+  "kitware": {
+    "title_en": "Kitware",
+    "title_fr": "Kitware",
+    "url": "https://www.kitware.com/"
+  },
+  "loading": {
+    "title_en": "Loading",
+    "title_fr": "Loading",
+    "url": "https://7fault.itch.io/loading"
+  },
+  "namr": {
+    "title_en": "nam.R",
+    "title_fr": "nam.R",
+    "url": "https://namr.com/"
+  },
+  "pipechecker": {
+    "title_en": "PipeChecker",
+    "title_fr": "PipeChecker",
+    "url": "https://github.com/AlexAuragan/PipeChecker"
+  },
+  "trickstr": {
+    "title_en": "Trickstr",
+    "title_fr": "Trickstr",
+    "url": "https://trickstr.ai/"
+  },
+  "vectors": {
+    "title_en": "Vectors",
+    "title_fr": "Vectors",
+    "url": "https://vectors-group.com/"
+  }
+}

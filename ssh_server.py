@@ -3,7 +3,6 @@ import fcntl
 import os
 import pty
 import struct
-import sys
 import termios
 import time
 from pathlib import Path
@@ -12,7 +11,7 @@ from signal import SIGWINCH
 import asyncssh
 
 BASE_DIR = Path(__file__).resolve().parent
-MAIN_PATH = BASE_DIR / "main.py"
+RESUME_BINARY = BASE_DIR / "resume_rust" / "target" / "release" / "resume"
 
 SSH_HOST = os.environ.get("SSH_HOST", "0.0.0.0")
 SSH_PORT = int(os.environ.get("SSH_PORT", "2222"))
@@ -104,8 +103,7 @@ async def handle_client(
     input_task = None
     try:
         child = await asyncio.create_subprocess_exec(
-            sys.executable,
-            str(MAIN_PATH),
+            str(RESUME_BINARY),
             cwd=BASE_DIR,
             env=env,
             stdin=slave_fd,
@@ -122,7 +120,7 @@ async def handle_client(
         slave_fd = -1
 
         print(
-            f"Started main.py as PID {child.pid}",
+            f"Started resume as PID {child.pid}",
             flush=True,
         )
 
@@ -200,7 +198,7 @@ async def handle_client(
         return_code = await child.wait()
 
         print(
-            f"main.py exited with code {return_code}",
+            f"resume exited with code {return_code}",
             flush=True,
         )
 
@@ -226,6 +224,12 @@ async def handle_client(
 
 
 async def main() -> None:
+    if not RESUME_BINARY.exists():
+        raise SystemExit(
+            f"resume binary not found: {RESUME_BINARY}\n"
+            "Build it with: (cd resume_rust && cargo build --release)"
+        )
+
     ensure_host_key()
 
     server = await asyncssh.create_server(

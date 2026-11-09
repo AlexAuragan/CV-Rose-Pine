@@ -1,6 +1,5 @@
 import os
 import shlex
-import sys
 from importlib.resources import files
 from pathlib import Path
 
@@ -82,14 +81,15 @@ def build_templates(destination: Path) -> Path:
 
 def main() -> None:
     base_dir = Path(__file__).resolve().parent
-    app_path = base_dir / "main.py"
+    binary = base_dir / "resume_rust" / "target" / "release" / "resume"
 
-    command = " ".join(
-        (
-            shlex.quote(sys.executable),
-            shlex.quote(str(app_path)),
+    if not binary.exists():
+        raise SystemExit(
+            f"resume binary not found: {binary}\n"
+            "Build it with: (cd resume_rust && cargo build --release)"
         )
-    )
+
+    command = shlex.quote(str(binary))
 
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "8001"))
