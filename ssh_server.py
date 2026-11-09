@@ -11,7 +11,14 @@ from signal import SIGWINCH
 import asyncssh
 
 BASE_DIR = Path(__file__).resolve().parent
-RESUME_BINARY = BASE_DIR / "resume_rust" / "target" / "release" / "resume"
+RESUME_CANDIDATES = (
+    BASE_DIR / "resume_rust" / "bin" / "resume",
+    BASE_DIR / "resume_rust" / "target" / "release" / "resume",
+)
+RESUME_BINARY = Path(
+    os.environ.get("RESUME_BINARY")
+    or next((path for path in RESUME_CANDIDATES if path.exists()), RESUME_CANDIDATES[-1])
+)
 
 SSH_HOST = os.environ.get("SSH_HOST", "0.0.0.0")
 SSH_PORT = int(os.environ.get("SSH_PORT", "2222"))
@@ -227,7 +234,7 @@ async def main() -> None:
     if not RESUME_BINARY.exists():
         raise SystemExit(
             f"resume binary not found: {RESUME_BINARY}\n"
-            "Build it with: (cd resume_rust && cargo build --release)"
+            "Build it with: resume_rust/build.sh"
         )
 
     ensure_host_key()

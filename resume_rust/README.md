@@ -40,9 +40,12 @@ resume_rust/
 ## Build & run
 
 ```sh
-cargo build --release      # produces target/release/resume
-./target/release/resume    # run in a terminal
-cargo test                 # headless render + navigation + search tests
+cargo build --release        # produces target/release/resume
+./target/release/resume      # run in a terminal
+cargo test                   # headless render + navigation + search tests
+
+./build.sh                   # build + copy the binary to tracked bin/resume
+./bin/resume                 # the deployable artifact
 ```
 
 ### Headless render dump
@@ -74,13 +77,25 @@ Identical to the Python app: `↑↓ jk` move, `←→ hl` switch pane, `↵` br
 `esc` back, `/ f` search (`n` / `N` cycle), `R` toggle FR/EN, `0`-`4` jump,
 `q` quit.
 
+## Shipping the binary
+
+`resume_rust/bin/resume` is a **tracked** copy of the release binary, for
+deploying to hosts that have no Rust toolchain. Rebuild it with `./build.sh`
+after any code **or content** change (`target/` stays gitignored).
+
+The binary is **platform-specific** — this one is x86-64 Linux/glibc. Build on
+the same OS/arch/libc as the target, or produce a static binary:
+
+```sh
+rustup target add x86_64-unknown-linux-musl
+cargo build --release --target x86_64-unknown-linux-musl
+```
+
 ## Deployment
 
-The Python servers only need the command they spawn changed:
-
-- `ssh_server.py`: replace `sys.executable, str(MAIN_PATH)` with the path to
-  `target/release/resume`.
-- `web_server.py`: point the `textual-serve` `command` at the same binary.
+The Python servers resolve the binary automatically: `resume_rust/bin/resume`
+first, then `resume_rust/target/release/resume`. Override the path with the
+`RESUME_BINARY` environment variable.
 
 ## Known differences from the Textual version
 

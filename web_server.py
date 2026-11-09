@@ -79,14 +79,25 @@ def build_templates(destination: Path) -> Path:
     return destination
 
 
-def main() -> None:
+def _resolve_binary() -> Path:
     base_dir = Path(__file__).resolve().parent
-    binary = base_dir / "resume_rust" / "target" / "release" / "resume"
+    candidates = (
+        base_dir / "resume_rust" / "bin" / "resume",
+        base_dir / "resume_rust" / "target" / "release" / "resume",
+    )
+    override = os.environ.get("RESUME_BINARY")
+    if override:
+        return Path(override)
+    return next((path for path in candidates if path.exists()), candidates[-1])
+
+
+def main() -> None:
+    binary = _resolve_binary()
 
     if not binary.exists():
         raise SystemExit(
             f"resume binary not found: {binary}\n"
-            "Build it with: (cd resume_rust && cargo build --release)"
+            "Build it with: resume_rust/build.sh"
         )
 
     command = shlex.quote(str(binary))
